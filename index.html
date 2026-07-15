@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10233f" />
+  <title>수학 선택과목 나침반</title>
+  <style>
+    :root {
+      --navy:#10233f; --navy2:#1f3a5f; --text:#182230; --muted:#667085;
+      --line:#d9e0e8; --soft:#f4f6f9; --white:#fff; --blue:#2563a6;
+      --green:#247a52; --amber:#9b6814; --red:#b42318; --radius:11px;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;background:var(--soft);color:var(--text);font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo",Arial,sans-serif;line-height:1.55}
+    button,input,select{font:inherit} button{cursor:pointer}
+    button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid rgba(37,99,166,.25);outline-offset:2px}
+    .topbar{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;border-bottom:1px solid rgba(255,255,255,.16)}
+    .topbar-inner{max-width:1120px;margin:auto;min-height:62px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+    .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.02em}.brand-mark{width:32px;height:32px;border:2px solid rgba(255,255,255,.9);border-radius:50%;display:grid;place-items:center;font-size:14px}
+    .top-actions{display:flex;gap:8px}.btn-top{min-height:36px;padding:7px 12px;border:1px solid rgba(255,255,255,.35);border-radius:8px;background:transparent;color:#fff;font-size:13px;font-weight:700}
+    .app-shell{max-width:1120px;margin:auto;padding:30px 20px 60px}.screen{display:none}.screen.active{display:block}.panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius)}
+    .hero{padding:42px;display:grid;grid-template-columns:1.3fr .7fr;gap:38px;align-items:center}.eyebrow{margin:0 0 10px;color:var(--blue);font-size:13px;font-weight:800;letter-spacing:.07em}
+    h1,h2,h3,p{margin-top:0}h1{margin-bottom:17px;font-size:clamp(29px,5vw,50px);line-height:1.15;letter-spacing:-.045em;color:var(--navy)}.lead{max-width:700px;margin-bottom:22px;color:#475467;font-size:17px}
+    .notice{padding:14px 16px;border-left:4px solid var(--amber);background:#fff9ed;color:#65480e;font-size:14px}.grade-box{padding:24px;border:1px solid var(--line);border-radius:var(--radius);background:var(--soft)}
+    .grade-box h2{margin-bottom:6px;font-size:21px;color:var(--navy)}.grade-box>p{margin-bottom:18px;color:var(--muted);font-size:14px}.grade-grid{display:grid;gap:10px}
+    .grade-card{width:100%;padding:18px;text-align:left;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:var(--text);transition:.16s}.grade-card:hover{border-color:var(--navy2);transform:translateY(-1px)}
+    .grade-card strong{display:block;margin-bottom:4px;color:var(--navy);font-size:18px}.grade-card span{color:var(--muted);font-size:13px}
+    .info-strip{margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#fff}.info-strip>div{padding:17px 18px;border-right:1px solid var(--line)}.info-strip>div:last-child{border-right:0}.info-strip strong{display:block;margin-bottom:3px;color:var(--navy);font-size:14px}.info-strip span{color:var(--muted);font-size:12px}
+    .survey-wrap{max-width:800px;margin:auto}.progress-card{margin-bottom:14px;padding:15px 18px;background:#fff;border:1px solid var(--line);border-radius:var(--radius)}.progress-row{display:flex;justify-content:space-between;gap:15px;margin-bottom:10px;color:#475467;font-size:13px;font-weight:700}.progress-track{height:7px;background:#e7ecf2;border-radius:99px;overflow:hidden}.progress-fill{height:100%;background:var(--blue);transition:width .2s ease}
+    .question-card{padding:34px}.question-number{margin-bottom:8px;color:var(--blue);font-size:12px;font-weight:800;letter-spacing:.1em}.question-title{margin-bottom:8px;color:var(--navy);font-size:clamp(23px,4vw,31px);letter-spacing:-.03em}.question-help{margin-bottom:24px;color:var(--muted);font-size:14px}.option-list{display:grid;gap:10px}
+    .option-button{width:100%;display:flex;align-items:flex-start;gap:13px;padding:16px;border:1px solid #cfd8e3;border-radius:9px;background:#fff;text-align:left;color:var(--text)}.option-button:hover{border-color:#8193a9}.option-button.selected{border:2px solid var(--blue);padding:15px;background:#f3f8fd}.option-letter{flex:none;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:#eef2f6;color:#475467;font-weight:800;font-size:12px}.option-button.selected .option-letter{background:var(--blue);color:#fff}.option-main strong{display:block;margin-bottom:3px;font-size:15px}.option-main span{display:block;color:var(--muted);font-size:13px}
+    .survey-actions{margin-top:14px;display:flex;justify-content:space-between;gap:10px}.btn{min-height:42px;padding:10px 16px;border-radius:8px;border:1px solid transparent;font-weight:750}.btn-primary{background:var(--navy);color:#fff}.btn-primary:hover{background:var(--navy2)}.btn-secondary{background:#fff;border-color:#cfd8e3;color:#344054}.btn:disabled{opacity:.45;cursor:not-allowed}
+    .result-header{padding:28px 30px;margin-bottom:16px}.result-header-row{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}.result-title{font-size:clamp(28px,4vw,40px);margin-bottom:8px}.result-subtitle{margin-bottom:0;color:var(--muted)}.badge{display:inline-flex;flex:none;padding:7px 10px;border-radius:99px;background:#eef4fb;color:#174b7a;font-size:12px;font-weight:800}
+    .cohort-note{margin-bottom:16px;padding:14px 17px;border:1px solid #d9c89b;border-radius:10px;background:#fff9ed;color:#65480e;font-size:14px}
+    .summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}.section-card{padding:24px}.section-card h2{margin-bottom:5px;font-size:20px;color:var(--navy)}.section-desc{margin-bottom:18px;color:var(--muted);font-size:13px}.profile-tags{display:flex;flex-wrap:wrap;gap:8px}.profile-tag{padding:7px 10px;border-radius:99px;border:1px solid #cfd8e3;background:#f8fafc;font-size:12px;font-weight:750}
+    .score-list{display:grid;gap:11px}.score-head{display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px}.score-name{font-weight:700}.score-value{color:var(--blue);font-weight:800}.score-track{height:7px;background:#e8edf3;border-radius:99px;overflow:hidden}.score-bar{height:100%;background:var(--blue)}
+    .math-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.course-feature{padding:20px;border:1px solid #d5dde7;border-radius:10px;background:#fff}.course-feature.top-course{border:2px solid var(--navy);padding:19px}.course-topline{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:10px}.course-topline h3{margin-bottom:3px;font-size:19px;color:var(--navy)}.semester{color:var(--muted);font-size:12px}.course-score{min-width:63px;text-align:right;color:var(--blue);font-size:28px;font-weight:850;line-height:1}.course-score small{display:block;margin-top:4px;color:var(--muted);font-size:10px}.course-label{display:inline-block;margin-bottom:9px;padding:4px 8px;border-radius:99px;background:#eef4fb;color:#174b7a;font-size:11px;font-weight:800}.reason-list{margin:0;padding-left:18px;color:#475467;font-size:13px}.reason-list li+li{margin-top:5px}
+    .block-stack{display:grid;gap:16px}.block-card{border:1px solid var(--line);border-radius:10px;overflow:hidden}.block-head{padding:17px 18px;background:#f8fafc;border-bottom:1px solid var(--line)}.block-head h3{margin-bottom:3px;color:var(--navy);font-size:17px}.block-head p{margin:0;color:var(--muted);font-size:12px}.course-table-wrap{overflow-x:auto}.course-table{width:100%;border-collapse:collapse;min-width:690px}.course-table th,.course-table td{padding:13px 15px;border-bottom:1px solid #e7ebf0;text-align:left;vertical-align:top}.course-table th{background:#fff;color:#475467;font-size:11px;letter-spacing:.02em}.course-table td{font-size:13px}.course-table tbody tr:last-child td{border-bottom:0}.rank{width:27px;height:27px;display:grid;place-items:center;border-radius:50%;background:#eef2f6;font-size:11px;font-weight:800}.course-name-cell strong{display:block;color:var(--navy);font-size:14px}.course-name-cell span{display:block;margin-top:3px;color:var(--muted);font-size:11px}.fit-pill{display:inline-block;white-space:nowrap;padding:4px 7px;border-radius:99px;font-size:11px;font-weight:800}.fit-high{background:#e9f6ef;color:#17643f}.fit-mid{background:#fff4dd;color:#81540a}.fit-low{background:#f1f3f6;color:#596579}
+    .admission-box{padding:2px}.admission-box h3{margin-bottom:10px;color:var(--navy);font-size:18px}.admission-box ul{margin:0;padding-left:19px;color:#475467;font-size:13px}.admission-box li+li{margin-top:7px}
+    .selection-card{padding:24px}.selection-toolbar{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}.selection-toolbar h2{margin-bottom:4px;color:var(--navy);font-size:20px}.selection-toolbar p{margin:0;color:var(--muted);font-size:13px}.check-section{margin-top:20px}.check-section-title{margin-bottom:8px;color:#344054;font-size:13px;font-weight:800}.check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.check-item{display:flex;gap:9px;padding:12px;border:1px solid #d6dee8;border-radius:8px;background:#fff}.check-item.recommended{background:#f4f8fc;border-color:#9db5ce}.check-item input{margin-top:3px}.check-item strong{display:block;color:var(--navy);font-size:13px}.check-item span span{display:block;margin-top:2px;color:var(--muted);font-size:11px}.selection-summary{margin-top:18px;padding:14px 16px;background:#f6f8fb;border-radius:8px}.selection-summary h3{margin-bottom:4px;font-size:13px;color:#344054}.selection-summary p{margin:0;color:#475467;font-size:13px}.result-actions{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px}
+    .reference-card{padding:20px}.reference-card summary{cursor:pointer;color:var(--navy);font-weight:800}.reference-content{padding-top:14px;color:#475467;font-size:13px}.reference-content li+li{margin-top:7px}.reference-content a{color:var(--blue)}
+    .modal-backdrop{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(9,21,38,.58)}.modal-backdrop.open{display:flex}.modal{width:min(620px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:12px;border:1px solid #cfd8e3}.modal-head{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;padding:18px 20px;background:#fff;border-bottom:1px solid var(--line)}.modal-head h2{margin:0;color:var(--navy);font-size:20px}.icon-btn{width:34px;height:34px;border:1px solid #d2dae4;border-radius:8px;background:#fff;font-size:21px}.modal-body{padding:20px}.modal-actions{padding:14px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}.form-group+ .form-group{margin-top:16px}.form-group label{display:block;margin-bottom:6px;font-size:13px;font-weight:800}.form-control{width:100%;min-height:42px;padding:9px 11px;border:1px solid #cbd5e1;border-radius:8px;background:#fff}.form-help{margin:6px 0 0;color:var(--muted);font-size:11px}
+    .toast{position:fixed;left:50%;bottom:25px;z-index:80;transform:translate(-50%,20px);padding:10px 14px;border-radius:8px;background:#182230;color:#fff;font-size:13px;opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:780px){.hero{grid-template-columns:1fr;padding:25px}.info-strip{grid-template-columns:1fr}.info-strip>div{border-right:0;border-bottom:1px solid var(--line)}.info-strip>div:last-child{border-bottom:0}.summary-grid,.math-grid,.check-grid{grid-template-columns:1fr}.result-header-row,.selection-toolbar{flex-direction:column}.question-card{padding:24px 18px}.app-shell{padding:20px 12px 45px}.topbar-inner{padding:0 12px}.brand-text{font-size:14px}.btn-top{padding:6px 9px;font-size:11px}}
+    @media print{.topbar,.result-actions,.selection-toolbar .btn,.reference-card{display:none!important}.app-shell{max-width:none;padding:0}.screen{display:none!important}#resultScreen{display:block!important}.panel,.block-card{break-inside:avoid}}
+  </style>
+<style id="ui-upgrade">
+  :root{
+    --navy:#112549;
+    --navy2:#1b3f73;
+    --text:#152132;
+    --muted:#5f6f86;
+    --line:#d6deea;
+    --soft:#eef4ff;
+    --white:#ffffff;
+    --blue:#2f6fed;
+    --blue2:#60a5fa;
+    --sky:#dfeeff;
+    --gold:#ffb648;
+    --gold2:#ffd978;
+    --shadow:0 18px 44px rgba(17,37,73,.10);
+    --shadow-soft:0 10px 24px rgba(17,37,73,.06);
+    --radius:18px;
+  }
+  body{
+    background:
+      radial-gradient(circle at top left, rgba(96,165,250,.22), transparent 28%),
+      radial-gradient(circle at 85% 10%, rgba(255,214,102,.20), transparent 22%),
+      linear-gradient(180deg, #f7fbff 0%, #eef4ff 50%, #f8fbff 100%);
+  }
+  body::before, body::after{
+    content:""; position:fixed; inset:auto; width:340px; height:340px; border-radius:50%; z-index:-1; filter:blur(8px); opacity:.38; pointer-events:none;
+  }
+  body::before{left:-100px; top:100px; background:radial-gradient(circle, rgba(47,111,237,.20), rgba(47,111,237,0)); animation:floatBlob 12s ease-in-out infinite;}
+  body::after{right:-80px; top:300px; background:radial-gradient(circle, rgba(255,182,72,.18), rgba(255,182,72,0)); animation:floatBlob 16s ease-in-out infinite reverse;}
+  @keyframes floatBlob{0%,100%{transform:translateY(0px) translateX(0)}50%{transform:translateY(-20px) translateX(18px)}}
+  .topbar{background:rgba(17,37,73,.88);backdrop-filter:blur(12px);box-shadow:0 10px 25px rgba(11,27,52,.15)}
+  .brand{gap:12px}
+  .brand-mark{width:38px;height:38px;border:none;background:linear-gradient(135deg, rgba(255,255,255,.94), rgba(218,231,255,.92)); color:var(--navy); box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 8px 18px rgba(0,0,0,.14); font-weight:900; letter-spacing:.02em;}
+  .btn-top{border-color:rgba(255,255,255,.18); background:rgba(255,255,255,.09); transition:all .22s ease}
+  .btn-top:hover{background:rgba(255,255,255,.18); transform:translateY(-1px)}
+  .app-shell{padding-top:34px}
+  .panel,.block-card,.modal{border:none; box-shadow:var(--shadow-soft)}
+  .hero{
+    position:relative; overflow:hidden; padding:48px; border-radius:24px;
+    background:
+      linear-gradient(135deg, rgba(255,255,255,.98), rgba(245,249,255,.96)),
+      linear-gradient(135deg, rgba(47,111,237,.10), rgba(255,182,72,.10));
+    box-shadow:var(--shadow);
+  }
+  .hero::before{
+    content:""; position:absolute; right:-80px; top:-100px; width:280px; height:280px; border-radius:50%;
+    background:radial-gradient(circle, rgba(47,111,237,.18), rgba(47,111,237,0) 68%);
+  }
+  .hero::after{
+    content:""; position:absolute; right:110px; bottom:-110px; width:240px; height:240px; border-radius:50%;
+    background:radial-gradient(circle, rgba(255,182,72,.20), rgba(255,182,72,0) 70%);
+  }
+  .eyebrow{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:rgba(47,111,237,.08); color:var(--blue); font-weight:900; letter-spacing:.08em}
+  h1{margin-top:14px; margin-bottom:18px; font-size:clamp(34px,5vw,56px)}
+  .lead{font-size:18px; line-height:1.65; color:#4e6077}
+  .notice{margin-top:22px; border:none; border-radius:16px; background:linear-gradient(135deg, #fff7e8, #fffdf6); box-shadow:inset 0 0 0 1px rgba(212,160,52,.20)}
+  .grade-box{position:relative; background:linear-gradient(180deg,#ffffff,#f7faff); border:none; box-shadow:inset 0 0 0 1px rgba(214,222,234,.9), var(--shadow-soft); border-radius:22px}
+  .grade-box::before{content:"빠른 진단"; position:absolute; right:18px; top:18px; padding:6px 10px; border-radius:999px; background:#edf4ff; color:var(--blue); font-size:11px; font-weight:900; letter-spacing:.06em}
+  .grade-card{padding:18px 18px 17px; border-radius:16px; border:1px solid rgba(47,111,237,.12); background:linear-gradient(180deg,#fff,#f8fbff); box-shadow:0 8px 22px rgba(17,37,73,.05); transition:all .22s ease}
+  .grade-card:hover{transform:translateY(-4px); box-shadow:0 16px 30px rgba(17,37,73,.12); border-color:rgba(47,111,237,.35)}
+  .grade-card strong{font-size:20px}
+  .info-strip{margin-top:22px; border:none; border-radius:22px; box-shadow:var(--shadow-soft); overflow:hidden}
+  .info-strip>div{background:rgba(255,255,255,.88)}
+  .info-strip strong{font-size:15px}
+  .progress-card,.question-card,.result-header,.section-card,.selection-card,.reference-card,.cohort-note{box-shadow:var(--shadow-soft); border-radius:20px}
+  .progress-card{background:rgba(255,255,255,.9); backdrop-filter:blur(12px)}
+  .progress-track{height:10px; background:#e4edf9}
+  .progress-fill{background:linear-gradient(90deg, var(--blue), #7cb6ff)}
+  .question-card{border-radius:24px; box-shadow:var(--shadow); background:linear-gradient(180deg,#ffffff,#fbfdff)}
+  .question-number{display:inline-flex; padding:6px 10px; border-radius:999px; background:#eff5ff}
+  .question-help{font-size:15px}
+  .option-button{position:relative; overflow:hidden; border:1px solid rgba(47,111,237,.12); border-radius:16px; padding:17px; box-shadow:0 8px 18px rgba(17,37,73,.04); transition:all .18s ease}
+  .option-button::before{content:""; position:absolute; inset:0; background:linear-gradient(120deg, rgba(47,111,237,.03), rgba(255,182,72,.03)); opacity:0; transition:opacity .18s ease}
+  .option-button:hover{transform:translateY(-2px); box-shadow:0 14px 28px rgba(17,37,73,.09)}
+  .option-button:hover::before{opacity:1}
+  .option-button.selected{background:linear-gradient(180deg,#f5f9ff,#ffffff); border:2px solid var(--blue); box-shadow:0 16px 30px rgba(47,111,237,.14)}
+  .option-letter{background:#edf3ff; color:var(--blue)}
+  .option-button.selected .option-letter{background:linear-gradient(135deg,var(--blue),#7cb6ff)}
+  .survey-actions{position:sticky; bottom:18px; z-index:3; padding:12px; border-radius:18px; background:rgba(255,255,255,.82); backdrop-filter:blur(12px); box-shadow:var(--shadow-soft)}
+  .btn{border-radius:12px; transition:transform .18s ease, box-shadow .18s ease, background .18s ease}
+  .btn:hover:not(:disabled){transform:translateY(-1px)}
+  .btn-primary{background:linear-gradient(135deg,var(--navy),var(--blue)); box-shadow:0 14px 24px rgba(47,111,237,.18)}
+  .btn-primary:hover{background:linear-gradient(135deg,var(--navy2),#3b82f6)}
+  .btn-secondary{border-color:#d9e2ef; background:linear-gradient(180deg,#fff,#f8fbff)}
+  .btn-ghost{background:rgba(255,255,255,.16); color:#fff; border:1px solid rgba(255,255,255,.28)}
+  .btn-ghost:hover{background:rgba(255,255,255,.24)}
+  .result-header{position:relative; overflow:hidden; background:linear-gradient(135deg,#10233f, #234f8f 78%, #3b82f6); color:#fff; box-shadow:var(--shadow)}
+  .result-header::after{content:""; position:absolute; width:280px; height:280px; right:-70px; top:-70px; border-radius:50%; background:radial-gradient(circle, rgba(255,255,255,.18), rgba(255,255,255,0) 70%)}
+  .result-title{color:#fff}
+  .result-subtitle{color:rgba(255,255,255,.82)}
+  .badge{background:rgba(255,255,255,.14); color:#fff; border:1px solid rgba(255,255,255,.12)}
+  .cohort-note{border:none; background:linear-gradient(135deg,#fff7ea,#fffdf9); box-shadow:var(--shadow-soft)}
+  .summary-grid,.math-grid,.block-stack{gap:18px}
+  .section-card,.selection-card{background:rgba(255,255,255,.92)}
+  .profile-tag{background:#f4f8ff; border-color:#dbe7ff; color:#2a4f8f}
+  .score-track{height:9px; background:#ebf1fa}
+  .score-bar{background:linear-gradient(90deg,#2f6fed,#6fb1ff)}
+  .celebration-card{position:relative; overflow:hidden; margin-bottom:18px; padding:28px; background:radial-gradient(circle at top left, rgba(255,255,255,.14), transparent 40%), linear-gradient(135deg, #182f59 0%, #255ca4 55%, #3b82f6 100%); color:#fff; box-shadow:0 24px 44px rgba(21,33,70,.18)}
+  .celebration-glow{position:absolute; inset:auto auto -90px -90px; width:240px; height:240px; border-radius:50%; background:radial-gradient(circle, rgba(255,214,120,.30), rgba(255,214,120,0) 70%); pointer-events:none}
+  .celebration-content{position:relative; z-index:2; display:grid; grid-template-columns:1.1fr .9fr; gap:20px; align-items:center}
+  .celebration-eyebrow{display:inline-flex; align-items:center; gap:8px; margin:0 0 12px; padding:7px 11px; border-radius:999px; background:rgba(255,255,255,.14); color:#fff6d0; font-size:12px; font-weight:900; letter-spacing:.08em}
+  .celebration-title{margin:0 0 10px; font-size:clamp(30px,5vw,50px); line-height:1.06; letter-spacing:-.05em; opacity:0; transform:translateY(18px) scale(.97)}
+  .celebration-lead{max-width:640px; margin:0 0 16px; color:rgba(255,255,255,.82); font-size:16px}
+  .celebration-tags{display:flex; flex-wrap:wrap; gap:10px}
+  .celebration-tag{padding:8px 12px; border-radius:999px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.14); font-size:12px; font-weight:800}
+  .winner-card{position:relative; overflow:hidden; padding:24px; border-radius:22px; background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.08)); border:1px solid rgba(255,255,255,.18); box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
+  .winner-card::after{content:""; position:absolute; inset:-20% auto auto -8%; width:120px; height:120px; background:radial-gradient(circle, rgba(255,214,120,.30), rgba(255,214,120,0) 70%)}
+  .winner-badge{display:inline-flex; padding:7px 11px; border-radius:999px; background:linear-gradient(135deg,#fff0b9,#ffd978); color:#845200; font-size:11px; font-weight:900; letter-spacing:.1em; box-shadow:0 8px 20px rgba(0,0,0,.12)}
+  .winner-course{margin-top:14px; font-size:clamp(34px,5vw,52px); font-weight:900; letter-spacing:-.05em; line-height:1.05; opacity:0; transform:scale(.78)}
+  .winner-semester{margin-top:8px; color:rgba(255,255,255,.82); font-size:14px}
+  .winner-score{display:flex; align-items:flex-end; gap:12px; margin-top:18px}
+  .winner-score span{font-size:12px; text-transform:uppercase; letter-spacing:.14em; color:rgba(255,255,255,.72); font-weight:800}
+  .winner-score strong{font-size:64px; line-height:1; color:#fff7dc; text-shadow:0 0 24px rgba(255,214,120,.28); opacity:0; transform:translateY(18px)}
+  .winner-reason{margin:16px 0 18px; color:rgba(255,255,255,.90); font-size:14px}
+  .confetti-layer{position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:1}
+  .confetti-piece,.confetti-star{position:absolute; top:-18px; pointer-events:none; will-change:transform, opacity}
+  .confetti-piece{width:12px; height:20px; border-radius:4px; background:var(--piece-color, #ffd978); left:var(--piece-left,50%); opacity:0; transform:translateY(-20px) rotate(0deg); animation:confettiFall var(--piece-duration, 2600ms) cubic-bezier(.16,.87,.42,.99) var(--piece-delay,0ms) forwards}
+  .confetti-star{width:18px; height:18px; left:var(--piece-left,50%); top:var(--piece-top,34%); opacity:0; background:radial-gradient(circle, rgba(255,255,255,.96) 0 28%, rgba(255,214,120,.98) 29% 58%, rgba(255,214,120,0) 59%); animation:starBurst 1200ms ease-out var(--piece-delay,0ms) forwards}
+  @keyframes confettiFall{0%{opacity:0; transform:translate3d(0,-30px,0) rotate(0)}12%{opacity:1}100%{opacity:1; transform:translate3d(var(--piece-drift,0px), 540px, 0) rotate(var(--piece-rotate,320deg))}}
+  @keyframes starBurst{0%{opacity:0; transform:translateY(0) scale(.1)}18%{opacity:1}100%{opacity:0; transform:translateY(-30px) scale(1.5)}}
+  @keyframes revealTitle{0%{opacity:0; transform:translateY(18px) scale(.97)}100%{opacity:1; transform:translateY(0) scale(1)}}
+  @keyframes revealCourse{0%{opacity:0; transform:scale(.72)}55%{transform:scale(1.08)}100%{opacity:1; transform:scale(1)}}
+  @keyframes revealScore{0%{opacity:0; transform:translateY(18px) scale(.9)}65%{transform:translateY(-4px) scale(1.06)}100%{opacity:1; transform:translateY(0) scale(1)}}
+  @keyframes pulseHalo{0%,100%{box-shadow:0 0 0 0 rgba(255,214,120,.0), 0 24px 44px rgba(21,33,70,.20)}50%{box-shadow:0 0 0 14px rgba(255,214,120,.10), 0 24px 44px rgba(21,33,70,.20)}}
+  .celebration-card.play{animation:pulseHalo 1200ms ease-out}
+  .celebration-card.play .celebration-title{animation:revealTitle 720ms cubic-bezier(.21,.94,.33,1) 120ms forwards}
+  .celebration-card.play .winner-course{animation:revealCourse 920ms cubic-bezier(.18,.89,.32,1.28) 380ms forwards}
+  .celebration-card.play .winner-score strong{animation:revealScore 880ms cubic-bezier(.18,.89,.32,1.18) 640ms forwards}
+  .course-feature{border-radius:18px; border:1px solid rgba(47,111,237,.10); box-shadow:0 10px 24px rgba(17,37,73,.05); background:linear-gradient(180deg,#fff,#fcfdff)}
+  .course-feature.top-course{background:linear-gradient(135deg,#fffdf7,#ffffff 50%, #f2f7ff); border:2px solid rgba(47,111,237,.46); box-shadow:0 16px 30px rgba(47,111,237,.12)}
+  .course-feature.top-course .course-label{background:linear-gradient(135deg,#ffe9a9,#ffd978); color:#7a4a00}
+  .course-score{color:var(--navy)}
+  .block-head{background:linear-gradient(180deg,#f8fbff,#f3f8ff)}
+  .course-table th{background:#f8fbff}
+  .rank{background:linear-gradient(135deg,#eff5ff,#f9fbff); color:#2f6fed}
+  .fit-high{background:#eaf7ef; color:#126d42}
+  .fit-mid{background:#fff4db; color:#8b5d06}
+  .selection-summary{background:linear-gradient(135deg,#f6f9ff,#f9fbff)}
+  .reference-card details{padding:20px 24px}
+  .reference-card summary{cursor:pointer; font-weight:800; color:var(--navy)}
+  .modal{box-shadow:0 24px 54px rgba(17,37,73,.22)}
+  .toast{background:linear-gradient(135deg,#182230,#294970); box-shadow:0 14px 30px rgba(0,0,0,.18)}
+  #resultScreen.active .section-card, #resultScreen.active .selection-card, #resultScreen.active .reference-card, #resultScreen.active .cohort-note{animation:riseIn .48s ease both}
+  #resultScreen.active .summary-grid > *:nth-child(1){animation-delay:.06s}
+  #resultScreen.active .summary-grid > *:nth-child(2){animation-delay:.12s}
+  #resultScreen.active #mathRecommendations{animation:riseIn .58s ease .18s both}
+  @keyframes riseIn{from{opacity:0; transform:translateY(16px)}to{opacity:1; transform:translateY(0)}}
+  @media (max-width: 900px){
+    .hero,.celebration-content,.summary-grid{grid-template-columns:1fr}
+    .celebration-title{font-size:clamp(28px,7vw,42px)}
+    .winner-score strong{font-size:54px}
+  }
+  @media (max-width: 720px){
+    .app-shell{padding:24px 14px 52px}
+    .hero{padding:26px}
+    .grade-box::before{display:none}
+    .info-strip{grid-template-columns:1fr}
+    .info-strip>div{border-right:0; border-bottom:1px solid var(--line)}
+    .info-strip>div:last-child{border-bottom:0}
+    .survey-actions{position:static; margin-top:14px}
+    .math-grid,.check-grid{grid-template-columns:1fr}
+    .selection-toolbar,.result-header-row{flex-direction:column; align-items:flex-start}
+    .celebration-card{padding:22px}
+    .winner-card{padding:20px}
+    .winner-course{font-size:40px}
+  }
+  @media print{
+    .celebration-card .confetti-layer, #replayCelebrationBtn{display:none!important}
+    .hero,.question-card,.progress-card,.survey-actions,.panel,.section-card,.selection-card{box-shadow:none!important}
+  }
+
+  .department-section{margin-bottom:18px; overflow:hidden}
+  .department-head{display:flex; justify-content:space-between; gap:18px; align-items:flex-start; margin-bottom:18px}
+  .department-head h2{margin-bottom:5px; color:var(--navy); font-size:22px}
+  .department-head p{margin:0; color:var(--muted); font-size:13px}
+  .department-warning{flex:none; padding:7px 10px; border-radius:999px; background:#fff4da; color:#81540a; font-size:11px; font-weight:850}
+  .department-overview{display:grid; grid-template-columns:.8fr 1.2fr; gap:16px; margin-bottom:16px}
+  .department-name-card{padding:20px; border-radius:18px; background:linear-gradient(135deg,#102a52,#2f6fed); color:#fff; position:relative; overflow:hidden}
+  .department-name-card::after{content:""; position:absolute; width:150px; height:150px; right:-55px; bottom:-65px; border-radius:50%; background:radial-gradient(circle,rgba(255,255,255,.24),transparent 70%)}
+  .department-name-card small{display:block; margin-bottom:8px; color:rgba(255,255,255,.72); font-size:11px; font-weight:850; letter-spacing:.08em}
+  .department-name-card strong{display:block; position:relative; z-index:1; font-size:25px; line-height:1.2; letter-spacing:-.04em}
+  .department-name-card p{position:relative; z-index:1; margin:10px 0 0; color:rgba(255,255,255,.82); font-size:13px}
+  .career-card{padding:18px; border-radius:18px; background:#f6f9ff; border:1px solid #dce7f7}
+  .career-card h3{margin-bottom:7px; color:var(--navy); font-size:15px}
+  .career-card p{margin:0; color:#526174; font-size:13px; line-height:1.65}
+  .department-course-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-bottom:16px}
+  .department-course-card{padding:16px; border-radius:16px; border:1px solid #dce5f2; background:linear-gradient(180deg,#fff,#f9fbff)}
+  .department-course-card.best{border:2px solid rgba(47,111,237,.48); padding:15px; box-shadow:0 12px 26px rgba(47,111,237,.10)}
+  .department-course-top{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:9px}
+  .department-course-top strong{color:var(--navy); font-size:15px}
+  .advantage-pill{white-space:nowrap; padding:4px 7px; border-radius:999px; background:#eaf2ff; color:#235ebd; font-size:10px; font-weight:900}
+  .department-course-card.best .advantage-pill{background:#fff0bd; color:#805100}
+  .department-course-card p{margin:0; color:#58677a; font-size:12px; line-height:1.58}
+  .evidence-box{padding:16px 18px; border-radius:16px; background:#fbfcfe; border:1px solid #e0e6ef}
+  .evidence-box h3{margin-bottom:9px; color:var(--navy); font-size:15px}
+  .evidence-list{display:grid; gap:8px}
+  .evidence-item{display:grid; grid-template-columns:auto 1fr; gap:9px; align-items:flex-start; color:#526174; font-size:12px; line-height:1.55}
+  .evidence-school{padding:4px 7px; border-radius:8px; background:#edf3ff; color:#2858a4; font-weight:850; white-space:nowrap}
+  .evidence-item a{color:#235ebd; text-decoration:none; font-weight:750}
+  .evidence-item a:hover{text-decoration:underline}
+  .course-detail-btn{width:100%; margin-top:14px; min-height:38px; border:1px solid #d2def0; border-radius:10px; background:#f7faff; color:#2858a4; font-size:12px; font-weight:850}
+  .course-detail-btn:hover{background:#edf4ff; border-color:#adc4e7}
+  .winner-detail-btn{width:100%; margin-bottom:8px}
+  .course-detail-intro{padding:16px; border-radius:15px; background:linear-gradient(135deg,#f0f6ff,#fff9ec); color:#45556b; font-size:14px; line-height:1.65}
+  .detail-keywords{display:flex; flex-wrap:wrap; gap:7px; margin-top:14px}
+  .detail-keyword{padding:6px 9px; border-radius:999px; background:#edf4ff; color:#295b9f; font-size:11px; font-weight:850}
+  .detail-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:18px}
+  .detail-unit{padding:14px; border:1px solid #dde5ef; border-radius:14px; background:#fff}
+  .detail-unit h3{margin-bottom:6px; color:var(--navy); font-size:14px}
+  .detail-unit p{margin:0; color:#59687a; font-size:12px; line-height:1.6}
+  .detail-section{margin-top:20px}
+  .detail-section h3{margin-bottom:8px; color:var(--navy); font-size:16px}
+  .detail-section ul{margin:0; padding-left:19px; color:#526174; font-size:13px}
+  .detail-section li+li{margin-top:6px}
+  .detail-source{margin-top:18px; padding:11px 13px; border-radius:11px; background:#f7f8fb; color:#697586; font-size:11px}
+  @media (max-width:900px){.department-overview{grid-template-columns:1fr}.department-course-grid{grid-template-columns:1fr 1fr}}
+  @media (max-width:620px){.department-head{flex-direction:column}.department-course-grid,.detail-grid{grid-template-columns:1fr}.department-warning{white-space:normal}}
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{animation-duration:0.01ms!important; animation-iteration-count:1!important; transition-duration:0.01ms!important; scroll-behavior:auto!important}
+  }
+</style>
+
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner"><div class="brand"><div class="brand-mark">M</div><span class="brand-text" id="brandText">수학 선택과목 나침반</span></div><div class="top-actions"><button class="btn-top" id="openSourcesBtn" type="button">근거 보기</button><button class="btn-top" id="openSettingsBtn" type="button">교사용 설정</button></div></div></header>
+<main class="app-shell">
+  <section class="screen active" id="homeScreen">
+    <div class="panel hero">
+      <div>
+        <p class="eyebrow">2022 개정 교육과정 · 학년별 선택과목 진단</p>
+        <h1>현재 학년에 맞는 수학 선택과목을 찾아보세요.</h1>
+        <p class="lead">진로, 수학 준비도, 탐구 성향, 과학·사회·인문 관심, 대입 준비 방식을 함께 분석하여 학기별 과목 우선순위와 선택 이유를 제시합니다.</p>
+        <div class="notice">1학년은 2029학년도 대학별 세부계획이 아직 공개 전이므로 2028 대입 체제와 대학별 권장과목을 참고합니다. 2학년은 공개된 2028학년도 대학별 시행계획과 전공 연계 과목 안내를 더 직접적으로 반영합니다.</div>
+      </div>
+      <div class="grade-box">
+        <h2>당신의 현재 학년은?</h2><p>학년에 따라 질문과 추천 과목이 달라집니다.</p>
+        <div class="grade-grid">
+          <button class="grade-card" type="button" data-grade="1"><strong>1학년</strong><span>2학년 1학기 인공지능 수학 · 2학기 기하 및 각 선택군 추천</span></button>
+          <button class="grade-card" type="button" data-grade="2"><strong>2학년</strong><span>3학년 1학기 미적분Ⅱ · 인공지능 수학 및 14개 선택과목 추천</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="info-strip"><div><strong>학년별 맞춤 질문</strong><span>미적분 준비도, 데이터·공간 성향까지 구분</span></div><div><strong>학기별 선택군 분석</strong><span>과목을 한 목록에 섞지 않고 실제 학기별로 제시</span></div><div><strong>최종 선택안 저장</strong><span>추천 이유 확인 후 직접 체크·복사·인쇄</span></div></div>
+  </section>
+
+  <section class="screen" id="surveyScreen">
+    <div class="survey-wrap">
+      <div class="progress-card"><div class="progress-row"><span id="progressLabel">질문 1</span><span id="gradeModeLabel"></span></div><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div></div>
+      <div class="panel question-card"><div class="question-number" id="questionNumber"></div><h2 class="question-title" id="questionTitle"></h2><p class="question-help" id="questionHelp"></p><div class="option-list" id="optionList"></div></div>
+      <div class="survey-actions"><button class="btn btn-secondary" id="prevBtn" type="button">이전</button><button class="btn btn-primary" id="nextBtn" type="button" disabled>다음</button></div>
+    </div>
+  </section>
+
+  <section class="screen" id="resultScreen">
+    <div class="panel result-header"><div class="result-header-row"><div><p class="eyebrow" id="resultEyebrow"></p><h1 class="result-title" id="resultTitle"></h1><p class="result-subtitle" id="resultSubtitle"></p></div><span class="badge" id="resultBadge"></span></div></div>
+    <div class="cohort-note" id="cohortNote"></div>
+    <section class="panel celebration-card" id="celebrationCard">
+      <div class="celebration-glow"></div>
+      <div class="celebration-content">
+        <div class="celebration-copy">
+          <p class="celebration-eyebrow">🎉 드라마틱 추천 결과</p>
+          <h2 class="celebration-title" id="celebrationTitle">당신의 수학 선택과목을 분석 중입니다.</h2>
+          <p class="celebration-lead" id="celebrationLead"></p>
+          <div class="celebration-tags" id="celebrationTags"></div>
+        </div>
+        <div class="winner-card" id="winnerCard">
+          <div class="winner-badge">TOP PICK</div>
+          <div class="winner-course" id="winnerCourse">추천 과목</div>
+          <div class="winner-semester" id="winnerSemester"></div>
+          <div class="winner-score"><span>적합도</span><strong id="winnerScore">0</strong></div>
+          <p class="winner-reason" id="winnerReason"></p>
+          <button class="btn btn-ghost winner-detail-btn" id="winnerDetailBtn" type="button">이 과목에서 무엇을 배우나요?</button><button class="btn btn-ghost" id="replayCelebrationBtn" type="button">축포 다시 보기</button>
+        </div>
+      </div>
+      <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+    </section>
+    <div class="summary-grid">
+      <section class="panel section-card"><h2>나의 학습·진로 프로필</h2><p class="section-desc">응답에서 강하게 나타난 요소입니다.</p><div class="profile-tags" id="profileTags"></div></section>
+      <section class="panel section-card"><h2>핵심 역량 분포</h2><p class="section-desc">과목 점수 계산에 사용한 상대적 강도입니다.</p><div class="score-list" id="dimensionScores"></div></section>
+    </div>
+
+    <section class="panel section-card department-section">
+      <div class="department-head"><div><h2>희망 학과와 수학 과목 연결</h2><p>선택한 학과의 대학 교과과정과 공개된 권장이수과목을 참고해 과목별 활용도를 설명합니다.</p></div><span class="department-warning">합격 가산점이 아닌 전공 준비도 기준</span></div>
+      <div class="department-overview"><div class="department-name-card" id="departmentNameCard"></div><div class="career-card" id="careerResultCard"></div></div>
+      <div class="department-course-grid" id="departmentCourseFit"></div>
+      <div class="evidence-box" id="universityEvidence"></div>
+    </section>
+    <section class="panel section-card" style="margin-bottom:16px"><h2 id="mathSectionTitle">수학 과목 추천</h2><p class="section-desc" id="mathSectionDesc"></p><div class="math-grid" id="mathRecommendations"></div></section>
+    <section class="panel section-card" style="margin-bottom:16px"><h2>학기별 선택과목 추천 순위</h2><p class="section-desc">학교에서 같은 선택 시기에 제시되는 과목을 학기별로 나누어 정렬했습니다.</p><div class="block-stack" id="linkedBlocks"></div></section>
+    <section class="panel section-card" style="margin-bottom:16px"><div class="admission-box" id="admissionAdvice"></div></section>
+    <section class="panel selection-card" style="margin-bottom:16px">
+      <div class="selection-toolbar"><div><h2>나의 최종 선택안</h2><p id="selectionHelp"></p></div><button class="btn btn-secondary" id="autoSelectBtn" type="button">추천안 자동 선택</button></div>
+      <div id="checkSections"></div>
+      <div class="selection-summary"><h3>선택 요약</h3><p id="selectionSummary">아직 선택한 과목이 없습니다.</p></div>
+      <div class="result-actions"><button class="btn btn-primary" id="copyResultBtn" type="button">결과 복사</button><button class="btn btn-secondary" id="printBtn" type="button">인쇄 / PDF 저장</button><button class="btn btn-secondary" id="restartBtn" type="button">처음부터 다시</button></div>
+    </section>
+    <section class="panel reference-card"><details><summary>대입 기준과 알고리즘의 한계 확인</summary><div class="reference-content" id="referenceContent"></div></details></section>
+  </section>
+</main>
+
+<div class="modal-backdrop" id="settingsModal"><div class="modal"><div class="modal-head"><h2>교사용 설정</h2><button class="icon-btn" type="button" data-close-modal="settingsModal">×</button></div><div class="modal-body">
+  <div class="form-group"><label for="schoolNameInput">학교 또는 프로그램 이름</label><input class="form-control" id="schoolNameInput" maxlength="40" /></div>
+  <div class="form-group"><label for="recommendCountInput">선택군별 자동 추천 과목 수</label><select class="form-control" id="recommendCountInput"><option value="1">1과목</option><option value="2">2과목</option><option value="3">3과목</option><option value="4">4과목</option><option value="5">5과목</option></select><p class="form-help">각 학기 선택군에서 자동 체크할 상위 과목 수입니다. 실제 학교 선택 개수에 맞춰 조절하세요.</p></div>
+  <div class="form-group"><label for="teacherNoteInput">학생 안내 문구</label><input class="form-control" id="teacherNoteInput" maxlength="100" /></div>
+</div><div class="modal-actions"><button class="btn btn-secondary" type="button" data-close-modal="settingsModal">취소</button><button class="btn btn-primary" id="saveSettingsBtn" type="button">저장</button></div></div></div>
+
+<div class="modal-backdrop" id="sourcesModal"><div class="modal"><div class="modal-head"><h2>기준과 설계 원칙</h2><button class="icon-btn" type="button" data-close-modal="sourcesModal">×</button></div><div class="modal-body reference-content">
+  <p><strong>현재 1학년</strong>: 2029학년도 대입 대상이지만 대학별 시행계획 공개 전입니다. 공개된 2028 대입 체제와 대학별 전공 연계 과목 안내를 참고 자료로 사용합니다.</p>
+  <p><strong>현재 2학년</strong>: 2028학년도 대입 대상이며, 2026년 4~5월 공개된 대학별 시행계획과 2028 전공 연계 과목 안내를 반영합니다.</p>
+  <ul><li>전공 관련 과목을 적절한 위계로 이수했는지</li><li>선택 과목에서 실제 성취와 탐구의 깊이를 보였는지</li><li>수능 직접 출제 여부와 학생부의 전공 연계 평가를 구분했는지</li><li>진로 적합성과 감당 가능한 학업 부담을 함께 고려했는지</li></ul>
+</div><div class="modal-actions"><button class="btn btn-primary" type="button" data-close-modal="sourcesModal">확인</button></div></div></div>
+
+<div class="modal-backdrop" id="courseDetailModal"><div class="modal"><div class="modal-head"><h2 id="courseDetailTitle">과목 안내</h2><button class="icon-btn" type="button" data-close-modal="courseDetailModal">×</button></div><div class="modal-body" id="courseDetailBody"></div><div class="modal-actions"><button class="btn btn-primary" type="button" data-close-modal="courseDetailModal">확인</button></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+const DIMENSIONS={math:"수학적 추론",calculus:"함수·변화율",data:"데이터·AI",spatial:"공간·설계",physics:"물리·공학",chemistry:"화학·물질",biology:"생명·보건",earth:"지구·환경",social:"사회 분석",humanities:"역사·인문",language:"언어·소통",global:"세계·문화",ethics:"윤리·가치",research:"탐구 지속력"};
+const MAJORS={
+ ai:{name:"AI·컴퓨터·데이터",type:"natural",vector:{math:4,calculus:3,data:5,physics:2,research:4}},
+ math:{name:"수학·통계",type:"natural",vector:{math:5,calculus:5,data:4,spatial:3,research:5}},
+ engineering:{name:"기계·전기전자·반도체·로봇",type:"natural",vector:{math:5,calculus:5,data:2,spatial:4,physics:5,research:4}},
+ architecture:{name:"건축·토목·도시",type:"natural",vector:{math:4,calculus:3,spatial:5,physics:3,earth:2,social:2,research:4}},
+ chemical:{name:"화학·신소재·화학공학",type:"natural",vector:{math:4,calculus:4,physics:2,chemistry:5,biology:1,research:5}},
+ bio:{name:"생명·의약·보건",type:"natural",vector:{math:3,calculus:2,data:2,chemistry:4,biology:5,ethics:2,research:5}},
+ earth:{name:"지구·환경·기후·천문",type:"natural",vector:{math:3,calculus:2,data:3,spatial:2,physics:2,chemistry:2,biology:2,earth:5,global:3,research:5}},
+ business:{name:"경제·경영·금융",type:"social",vector:{math:4,calculus:3,data:4,social:5,language:2,global:3,research:3}},
+ society:{name:"정치·행정·법·사회과학",type:"social",vector:{math:1,data:3,social:5,humanities:2,language:3,global:4,ethics:4,research:4}},
+ humanities:{name:"언어·역사·문화·철학",type:"humanities",vector:{social:2,humanities:5,language:5,global:4,ethics:4,research:4}},
+ education:{name:"교육·교직",type:"mixed",vector:{math:2,data:1,social:3,humanities:3,language:4,ethics:4,research:4}},
+ undecided:{name:"아직 탐색 중",type:"mixed",vector:{math:2,calculus:2,data:2,spatial:2,physics:1,chemistry:1,biology:1,earth:1,social:2,humanities:2,language:2,global:2,ethics:2,research:3}}
+};
+
+const DEPARTMENT_GROUPS={
+ ai:[
+  {value:"ai_major",label:"인공지능학과·AI융합학부",sub:"머신러닝, 딥러닝, 자율주행, 지능형 시스템",category:"aiData",vector:{data:5,math:4,calculus:3,research:5},courseBoost:{g1_ai:18,g1_geo:4,g2_ai:19,g2_calc2:8}},
+  {value:"computer",label:"컴퓨터공학·소프트웨어학과",sub:"알고리즘, 소프트웨어, 컴퓨터 그래픽스, 시스템",category:"aiData",vector:{data:4,math:4,spatial:2,research:4},courseBoost:{g1_ai:14,g1_geo:8,g2_ai:15,g2_calc2:8}},
+  {value:"data_science",label:"데이터과학·빅데이터학과",sub:"통계, 데이터 분석, 기계학습, 시각화",category:"aiData",vector:{data:5,math:4,calculus:3,research:5},courseBoost:{g1_ai:18,g1_geo:3,g2_ai:18,g2_calc2:11}},
+  {value:"cyber",label:"정보보안·사이버국방 계열",sub:"암호, 보안, 네트워크, 데이터 분석",category:"aiData",vector:{data:4,math:4,research:4},courseBoost:{g1_ai:13,g1_geo:5,g2_ai:14,g2_calc2:8}},
+  {value:"ai_unsure",label:"AI·컴퓨터 계열 안에서 탐색 중",sub:"여러 세부 전공을 열어 두고 탐색",category:"aiData",vector:{data:4,math:3,research:4},courseBoost:{g1_ai:14,g1_geo:4,g2_ai:15,g2_calc2:7}}
+ ],
+ math:[
+  {value:"mathematics",label:"수학과",sub:"해석, 대수, 기하, 확률 등 수학 이론",category:"math",vector:{math:5,calculus:5,spatial:3,research:5},courseBoost:{g1_ai:8,g1_geo:14,g2_ai:7,g2_calc2:19}},
+  {value:"statistics",label:"통계학·응용통계학과",sub:"확률, 통계 추론, 데이터 모델링",category:"aiData",vector:{math:5,data:5,calculus:4,research:5},courseBoost:{g1_ai:15,g1_geo:3,g2_ai:15,g2_calc2:15}},
+  {value:"math_education",label:"수학교육과",sub:"수학 이론과 교수·학습 방법",category:"math",vector:{math:5,calculus:5,spatial:3,language:2,research:5},courseBoost:{g1_ai:8,g1_geo:13,g2_ai:7,g2_calc2:18}},
+  {value:"financial_math",label:"금융수학·보험계리·수리금융 계열",sub:"확률, 미적분, 금융 모델과 위험 분석",category:"business",vector:{math:5,calculus:5,data:4,social:3,research:4},courseBoost:{g1_ai:11,g1_geo:2,g2_ai:11,g2_calc2:16}}
+ ],
+ engineering:[
+  {value:"electrical",label:"전기전자·반도체공학과",sub:"회로, 신호, 전자기, 반도체, 제어",category:"engineering",vector:{math:5,calculus:5,physics:5,data:2,spatial:3,research:5},courseBoost:{g1_ai:7,g1_geo:11,g2_ai:7,g2_calc2:18}},
+  {value:"mechanical",label:"기계·로봇공학과",sub:"동역학, 설계, 로봇, 열·유체",category:"engineering",vector:{math:5,calculus:5,physics:5,spatial:5,research:5},courseBoost:{g1_ai:5,g1_geo:17,g2_ai:5,g2_calc2:18}},
+  {value:"aerospace",label:"항공우주공학과",sub:"비행역학, 궤도, 유체, 구조 설계",category:"engineering",vector:{math:5,calculus:5,physics:5,spatial:5,earth:2,research:5},courseBoost:{g1_ai:4,g1_geo:18,g2_ai:4,g2_calc2:19}},
+  {value:"industrial",label:"산업공학과",sub:"최적화, 데이터, 운영, 시스템 설계",category:"aiData",vector:{math:5,data:5,calculus:4,social:2,research:5},courseBoost:{g1_ai:14,g1_geo:5,g2_ai:14,g2_calc2:14}},
+  {value:"engineering_unsure",label:"공학 계열 안에서 탐색 중",sub:"수학·물리 기초를 넓게 준비",category:"engineering",vector:{math:5,calculus:5,physics:4,spatial:3,research:4},courseBoost:{g1_ai:5,g1_geo:12,g2_ai:5,g2_calc2:16}}
+ ],
+ architecture:[
+  {value:"architecture",label:"건축학·건축공학과",sub:"공간 설계, 구조, 건축 환경",category:"spatial",vector:{math:4,calculus:3,spatial:5,physics:3,research:5},courseBoost:{g1_ai:3,g1_geo:19,g2_ai:3,g2_calc2:11}},
+  {value:"civil",label:"토목·건설환경공학과",sub:"구조, 지반, 수자원, 인프라",category:"engineering",vector:{math:5,calculus:5,spatial:4,physics:4,earth:3,research:5},courseBoost:{g1_ai:3,g1_geo:15,g2_ai:3,g2_calc2:17}},
+  {value:"urban",label:"도시공학·도시계획학과",sub:"공간 데이터, 교통, 도시 시스템과 정책",category:"spatial",vector:{math:3,data:4,spatial:5,earth:3,social:4,research:5},courseBoost:{g1_ai:10,g1_geo:14,g2_ai:10,g2_calc2:8}},
+  {value:"spatial_info",label:"공간정보·지리정보·조경 계열",sub:"지도, GIS, 공간 분석과 환경 설계",category:"spatial",vector:{data:4,spatial:5,earth:4,global:3,research:5},courseBoost:{g1_ai:9,g1_geo:15,g2_ai:9,g2_calc2:7}}
+ ],
+ chemical:[
+  {value:"chemistry_major",label:"화학과",sub:"물질 구조, 반응, 분석과 이론 화학",category:"science",vector:{math:4,calculus:4,chemistry:5,physics:2,research:5},courseBoost:{g1_ai:4,g1_geo:3,g2_ai:4,g2_calc2:15}},
+  {value:"chemical_engineering",label:"화학공학·에너지공학과",sub:"반응, 공정, 에너지·물질 전달",category:"engineering",vector:{math:5,calculus:5,chemistry:5,physics:3,research:5},courseBoost:{g1_ai:4,g1_geo:4,g2_ai:4,g2_calc2:18}},
+  {value:"materials",label:"신소재·재료공학과",sub:"재료 구조와 물성, 반도체·나노 소재",category:"engineering",vector:{math:4,calculus:4,chemistry:5,physics:4,spatial:2,research:5},courseBoost:{g1_ai:4,g1_geo:7,g2_ai:4,g2_calc2:16}}
+ ],
+ bio:[
+  {value:"life_science",label:"생명과학·생명공학과",sub:"세포, 유전, 생명정보와 바이오 기술",category:"bioHealth",vector:{biology:5,chemistry:4,data:3,math:3,research:5},courseBoost:{g1_ai:8,g1_geo:1,g2_ai:8,g2_calc2:10}},
+  {value:"medicine",label:"의예·의학과",sub:"인체, 질병, 임상과 의학 연구",category:"bioHealth",vector:{biology:5,chemistry:4,data:3,ethics:3,research:5},courseBoost:{g1_ai:7,g1_geo:1,g2_ai:7,g2_calc2:11}},
+  {value:"pharmacy",label:"약학과",sub:"약물 작용, 제제, 약동학과 신약 개발",category:"bioHealth",vector:{biology:4,chemistry:5,data:3,calculus:3,research:5},courseBoost:{g1_ai:6,g1_geo:1,g2_ai:6,g2_calc2:13}},
+  {value:"biomedical",label:"바이오의공·디지털헬스 계열",sub:"의료기기, 생체신호, 의료 데이터·AI",category:"bioHealth",vector:{biology:4,physics:3,data:5,math:4,calculus:3,research:5},courseBoost:{g1_ai:15,g1_geo:7,g2_ai:15,g2_calc2:13}},
+  {value:"nursing_health",label:"간호·보건·의료과학 계열",sub:"환자 건강, 보건 자료와 임상 근거",category:"bioHealth",vector:{biology:5,data:3,ethics:4,social:2,research:4},courseBoost:{g1_ai:7,g1_geo:1,g2_ai:7,g2_calc2:8}}
+ ],
+ earth:[
+  {value:"earth_science",label:"지구환경과학·지질학과",sub:"지구 시스템, 지질, 기후와 자연재해",category:"earth",vector:{earth:5,data:4,math:3,physics:3,spatial:3,research:5},courseBoost:{g1_ai:8,g1_geo:11,g2_ai:8,g2_calc2:11}},
+  {value:"environmental",label:"환경공학과",sub:"기후, 수질·대기, 환경 시스템과 모델",category:"earth",vector:{earth:5,data:4,chemistry:3,biology:2,calculus:3,research:5},courseBoost:{g1_ai:9,g1_geo:7,g2_ai:9,g2_calc2:12}},
+  {value:"astronomy",label:"천문·우주과학과",sub:"천체, 우주, 관측 자료와 물리 모델",category:"engineering",vector:{earth:5,physics:5,math:5,calculus:5,spatial:5,data:3,research:5},courseBoost:{g1_ai:6,g1_geo:18,g2_ai:6,g2_calc2:18}},
+  {value:"climate",label:"기후·대기·해양과학 계열",sub:"대기·해양 순환, 기후 데이터와 예측",category:"earth",vector:{earth:5,data:5,math:4,calculus:4,physics:3,research:5},courseBoost:{g1_ai:11,g1_geo:9,g2_ai:11,g2_calc2:14}}
+ ],
+ business:[
+  {value:"economics",label:"경제학과",sub:"경제수학, 통계, 계량경제와 정책 분석",category:"business",vector:{math:4,calculus:4,data:4,social:5,research:4},courseBoost:{g1_ai:11,g1_geo:1,g2_ai:11,g2_calc2:13}},
+  {value:"business_major",label:"경영학과",sub:"재무, 마케팅, 운영, 데이터 기반 의사결정",category:"business",vector:{math:3,data:4,social:5,language:2,research:4},courseBoost:{g1_ai:13,g1_geo:1,g2_ai:13,g2_calc2:8}},
+  {value:"finance",label:"금융·보험·회계 계열",sub:"금융 모델, 위험, 자산 가치와 데이터",category:"business",vector:{math:5,calculus:4,data:4,social:4,research:4},courseBoost:{g1_ai:11,g1_geo:1,g2_ai:11,g2_calc2:14}}
+ ],
+ society:[
+  {value:"politics_admin",label:"정치외교·행정학과",sub:"정책, 제도, 국제관계와 공공 데이터",category:"social",vector:{social:5,data:3,global:4,ethics:3,language:3,research:5},courseBoost:{g1_ai:8,g1_geo:1,g2_ai:8,g2_calc2:3}},
+  {value:"sociology",label:"사회학·사회복지학과",sub:"사회 조사, 불평등, 인구와 정책",category:"social",vector:{social:5,data:4,ethics:3,language:3,research:5},courseBoost:{g1_ai:10,g1_geo:1,g2_ai:10,g2_calc2:3}},
+  {value:"law",label:"법학·법정책 계열",sub:"법적 판단, 제도, 기술·데이터 윤리",category:"social",vector:{social:5,ethics:5,language:4,data:2,research:4},courseBoost:{g1_ai:6,g1_geo:1,g2_ai:6,g2_calc2:2}},
+  {value:"media",label:"미디어·커뮤니케이션학과",sub:"콘텐츠, 여론, 플랫폼과 미디어 데이터",category:"social",vector:{social:4,data:4,language:5,humanities:3,research:4},courseBoost:{g1_ai:10,g1_geo:2,g2_ai:10,g2_calc2:3}}
+ ],
+ humanities:[
+  {value:"language_lit",label:"국어국문·외국어문학 계열",sub:"언어, 문학, 문화와 텍스트 해석",category:"humanities",vector:{language:5,humanities:5,global:3,research:4},courseBoost:{g1_ai:4,g1_geo:1,g2_ai:4,g2_calc2:1}},
+  {value:"history",label:"역사·고고학과",sub:"사료, 시대 변화, 문화와 공간",category:"humanities",vector:{humanities:5,global:4,spatial:2,data:2,research:5},courseBoost:{g1_ai:5,g1_geo:2,g2_ai:5,g2_calc2:1}},
+  {value:"philosophy",label:"철학·윤리학과",sub:"논증, 가치 판단, 과학기술 윤리",category:"humanities",vector:{humanities:5,ethics:5,language:4,research:5},courseBoost:{g1_ai:5,g1_geo:1,g2_ai:5,g2_calc2:1}},
+  {value:"digital_humanities",label:"문화콘텐츠·디지털인문학 계열",sub:"문화 자료, 디지털 콘텐츠와 데이터 분석",category:"social",vector:{humanities:4,language:4,data:4,global:3,research:4},courseBoost:{g1_ai:10,g1_geo:3,g2_ai:10,g2_calc2:3}}
+ ],
+ education:[
+  {value:"education_major",label:"교육학과",sub:"학습, 교육정책, 교육 데이터와 상담",category:"education",vector:{social:4,language:4,ethics:4,data:2,research:5},courseBoost:{g1_ai:6,g1_geo:1,g2_ai:6,g2_calc2:2}},
+  {value:"science_education",label:"수학·과학 교육 계열",sub:"수학·과학 내용과 교수 방법",category:"math",vector:{math:4,calculus:4,physics:2,chemistry:2,biology:2,earth:2,language:3,research:5},courseBoost:{g1_ai:7,g1_geo:11,g2_ai:7,g2_calc2:14}},
+  {value:"elementary",label:"초등교육과",sub:"여러 교과를 가르치는 종합적 교육 역량",category:"education",vector:{language:4,social:3,ethics:4,math:2,research:4},courseBoost:{g1_ai:5,g1_geo:2,g2_ai:5,g2_calc2:2}}
+ ],
+ undecided:[
+  {value:"explore_natural",label:"자연·공학 계열 중심으로 탐색",sub:"수학과 과학 기초를 넓게 준비",category:"engineering",vector:{math:4,calculus:4,physics:2,chemistry:2,biology:2,earth:2,research:4},courseBoost:{g1_ai:7,g1_geo:9,g2_ai:7,g2_calc2:11}},
+  {value:"explore_data",label:"AI·데이터 융합 분야 중심으로 탐색",sub:"여러 전공에서 데이터 활용 가능성을 확인",category:"aiData",vector:{data:5,math:3,social:2,research:4},courseBoost:{g1_ai:14,g1_geo:3,g2_ai:15,g2_calc2:7}},
+  {value:"explore_social",label:"사회·인문 계열 중심으로 탐색",sub:"자료 분석과 언어·사회 탐구를 균형 있게 준비",category:"social",vector:{social:4,humanities:3,language:3,data:2,research:4},courseBoost:{g1_ai:7,g1_geo:1,g2_ai:7,g2_calc2:2}},
+  {value:"free_major",label:"자유전공·계열 미정",sub:"흥미와 성취 가능성을 바탕으로 폭넓게 탐색",category:"explore",vector:{math:2,data:2,spatial:2,social:2,humanities:2,research:4},courseBoost:{g1_ai:6,g1_geo:5,g2_ai:6,g2_calc2:5}}
+ ]
+};
+const ALL_DEPARTMENTS=Object.values(DEPARTMENT_GROUPS).flat();
+const DEPARTMENT_BY_ID=Object.fromEntries(ALL_DEPARTMENTS.map(x=>[x.value,x]));
+const CAREER_OPTIONS=[
+ {value:"ai_work",label:"AI 모델·데이터 분석·소프트웨어를 만드는 일",sub:"AI 엔지니어, 데이터 분석가, 개발자",vector:{data:5,math:4,research:4}},
+ {value:"design_work",label:"기계·로봇·건축물·반도체를 설계하는 일",sub:"설계 엔지니어, 로봇·항공·건축 분야",vector:{calculus:4,spatial:5,physics:5,math:4,research:4}},
+ {value:"research_work",label:"수학·과학 원리를 연구하고 새로운 지식을 찾는 일",sub:"수학자, 과학자, 연구원",vector:{math:5,calculus:5,research:5}},
+ {value:"health_work",label:"질병을 이해하고 사람의 건강을 돌보는 일",sub:"의료인, 의과학자, 약학·바이오 연구자",vector:{biology:5,chemistry:4,data:2,ethics:3,research:5}},
+ {value:"business_work",label:"경제·금융·기업의 문제를 분석하고 의사결정하는 일",sub:"경제·금융 분석, 경영기획, 회계·보험",vector:{math:3,data:4,social:5,research:4}},
+ {value:"policy_work",label:"사회 문제를 조사하고 정책·법·제도를 만드는 일",sub:"공무원, 정책연구, 법률·사회조사",vector:{social:5,data:3,ethics:4,language:3,research:5}},
+ {value:"communication_work",label:"언어·문화·교육 콘텐츠로 사람과 소통하는 일",sub:"교사, 작가, 언론·콘텐츠·문화 분야",vector:{language:5,humanities:5,social:2,research:4}},
+ {value:"career_open",label:"아직 구체적인 직업은 정하지 않았다",sub:"학과와 직업을 함께 탐색 중",vector:{research:3,data:1,social:1}}
+];
+const UNIVERSITY_EVIDENCE={
+ aiData:{career:"데이터를 수치로 표현하고 확률·행렬·최적화의 감각을 익히는 것이 대학의 AI·데이터 교과와 자연스럽게 연결됩니다.",reasons:{ai:"데이터 표현, 행렬 연산, 확률, 손실함수와 최적화를 다뤄 AI·데이터 전공의 입문 개념과 직접 연결됩니다.",geometry:"벡터와 공간 표현은 컴퓨터 그래픽스·컴퓨터 비전·로봇 분야에서 보조 기반이 됩니다.",calc2:"변화율과 최적화, 연속적인 모델을 이해하는 기초가 되어 기계학습과 통계 모델을 더 깊게 공부할 때 도움이 됩니다."},items:[
+  {school:"고려대 데이터과학과",text:"현재 교과목에 선형대수Ⅰ, 확률론, 수리통계학, 기계학습, 볼록최적화, 데이터과학 등이 편성되어 있습니다.",url:"https://datascience.korea.ac.kr/ds/under/ds_course.do"},
+  {school:"고려대 AI융합전공",text:"확률및랜덤과정, 공학수학, 선형대수, 인공지능, 기계학습, 컴퓨터비전, 자율주행 관련 과목을 운영합니다.",url:"https://cs.korea.ac.kr/cs/under/ai_course.do"}
+ ]},
+ engineering:{career:"자연·공학계열에서는 미적분과 벡터·공간 감각이 대학의 공학수학, 역학, 설계, 시뮬레이션 학습으로 이어집니다.",reasons:{ai:"로봇·반도체·스마트 제조에서 데이터와 AI가 널리 활용되므로 융합 역량을 더할 수 있습니다.",geometry:"벡터, 공간좌표, 도형의 관계는 설계·기구학·로봇 운동·3차원 모델링과 강하게 연결됩니다.",calc2:"극한·미분·적분은 공학수학, 동역학, 유체·열·전자기 등 변화와 운동을 다루는 전공의 핵심 기초입니다."},items:[
+  {school:"고려대 권장이수과목",text:"공개된 자연계열 권장이수과목 안내에서 수학과와 전기전자공학부 등 여러 자연·공학 모집단위에 미적분Ⅱ와 기하가 제시됩니다.",url:"https://oku.korea.ac.kr/oku/cms/CMN_CON/MainLink.do?BASE_SITE_NO=2&BBS_SEQ=1727&BOARD_SEQ=5&CONFIG_CD=C1435&CONFIG_SEQ=1&GBN=BA&SITE_NO=2&SUB_SEQ=2&TEMP_CODE=IPSI_C"},
+  {school:"고려대 기계공학부",text:"학부 교육과정에 공업수학Ⅰ·Ⅱ, 동역학, 기구학, 전산기이용기계제도, 유한요소법 등이 포함되어 있습니다.",url:"https://me.korea.ac.kr/undergraduate/graduate.html"}
+ ]},
+ spatial:{career:"건축·도시·공간정보 계열은 공간 구조를 시각화하고 좌표·벡터로 설명하는 기하 역량과 데이터 기반 공간 분석을 함께 활용합니다.",reasons:{ai:"도시 데이터, GIS, 스마트시티, 생성형 설계처럼 공간 문제를 데이터로 분석할 때 활용 범위가 넓습니다.",geometry:"공간도형, 좌표, 벡터, 정사영은 건축·도시·공간정보 분야의 시각화와 설계 사고에 가장 직접적으로 연결됩니다.",calc2:"구조·환경·교통 흐름처럼 시간과 공간에 따라 변하는 현상을 모델링할 때 미적분 기초가 도움이 됩니다."},items:[
+  {school:"고려대 권장이수과목",text:"건축학과·기계공학부 등 자연·공학 모집단위별 수학 권장과목을 공개하며 미적분Ⅱ와 기하의 전공 연계성을 안내합니다.",url:"https://oku.korea.ac.kr/oku/cms/CMN_CON/MainLink.do?BASE_SITE_NO=2&BBS_SEQ=1727&BOARD_SEQ=5&CONFIG_CD=C1435&CONFIG_SEQ=1&GBN=BA&SITE_NO=2&SUB_SEQ=2&TEMP_CODE=IPSI_C"},
+  {school:"선택과목 안내서",text:"기하의 심화 활동으로 항공 궤도, 건축물의 정사영·그림자 면적, 로봇 팔의 벡터 운동을 제시합니다.",url:"#"}
+ ]},
+ math:{career:"수학·수학교육 계열은 미적분의 위계 학습과 기하적 추론을 모두 중요하게 다루며, 데이터·AI는 현대 응용수학의 폭을 넓혀 줍니다.",reasons:{ai:"행렬, 확률, 최적화는 통계·응용수학·AI 모델의 기반이어서 수학을 현실 문제에 적용하는 경험을 제공합니다.",geometry:"기하적 대상을 시각화하고 논리적으로 증명하는 경험은 수학과 수학교육의 핵심 역량과 연결됩니다.",calc2:"수열·급수, 초월함수의 미분, 여러 적분법은 대학 미적분학과 해석학으로 이어지는 가장 직접적인 준비입니다."},items:[
+  {school:"서울대 수리과학부",text:"학부 미적분학에서 함수의 극한, 미분·적분과 응용, 다변수함수, 미분방정식 등을 다룹니다.",url:"https://www.math.snu.ac.kr/bbs/board.php?bo_table=Math_Courses"},
+  {school:"고려대 권장이수과목",text:"수학과에 미적분Ⅱ와 기하를 권장하는 자연계열 권장이수과목 안내를 공개하고 있습니다.",url:"https://oku.korea.ac.kr/oku/cms/CMN_CON/MainLink.do?BASE_SITE_NO=2&BBS_SEQ=1727&BOARD_SEQ=5&CONFIG_CD=C1435&CONFIG_SEQ=1&GBN=BA&SITE_NO=2&SUB_SEQ=2&TEMP_CODE=IPSI_C"}
+ ]},
+ science:{career:"화학·재료 계열은 물질 변화와 반응을 정량적으로 설명하기 위해 함수와 미적분을 활용하며, 데이터 분석 역량도 연구에서 중요해지고 있습니다.",reasons:{ai:"실험 데이터 분류와 물질 예측 모델을 탐구할 때 AI·데이터 수학이 융합 역량을 더합니다.",geometry:"분자 구조나 결정 구조를 시각화하는 데 공간 감각이 보조적으로 도움이 됩니다.",calc2:"반응 속도, 에너지 변화, 공정 모델을 이해하는 대학 수학의 기반으로 활용됩니다."},items:[
+  {school:"서울대 전공 연계 안내",text:"대학은 전공을 공부하는 데 도움이 되는 고교 과목을 안내하고, 과목 이수 여부뿐 아니라 선택의 적극성과 충실성을 함께 평가한다고 설명합니다.",url:"https://admission.snu.ac.kr/undergraduate/notice?bbsidx=156194&md=v"},
+  {school:"고려대 권장이수과목",text:"자연계열 모집단위별로 미적분Ⅱ와 과학 심화과목을 포함한 권장이수과목을 공개합니다.",url:"https://oku.korea.ac.kr/oku/cms/CMN_CON/MainLink.do?BASE_SITE_NO=2&BBS_SEQ=1727&BOARD_SEQ=5&CONFIG_CD=C1435&CONFIG_SEQ=1&GBN=BA&SITE_NO=2&SUB_SEQ=2&TEMP_CODE=IPSI_C"}
+ ]},
+ bioHealth:{career:"생명·의약·보건 계열은 생명과학과 화학이 우선이지만, 약물 농도 변화·의료 데이터·의료 AI처럼 정량 분석이 필요한 분야에서 미적분과 AI 수학이 활용됩니다.",reasons:{ai:"의료 영상, 유전체, 임상 데이터 분석과 예측 모델에 연결되어 바이오데이터·의료AI 분야에서 특히 유용합니다.",geometry:"의료 영상과 3차원 해부 구조를 다룰 때 공간 감각이 보조적으로 도움이 됩니다.",calc2:"약물 농도 변화와 AUC, 생체 변화 모델처럼 연속적인 변화를 해석하는 기초가 됩니다."},items:[
+  {school:"서울대 의과학과",text:"교육목표에서 높은 자료 분석 능력과 다양한 연구 방법을 강조하고, 분자생물학통계·유전체의학·생체영상 관련 과목을 운영합니다.",url:"https://medicine.snu.ac.kr/fnt/bbm/bbs/selectBoardArticleView.do?nttId=513"},
+  {school:"선택과목 안내서",text:"미적분Ⅱ 심화 사례로 약물 투여 후 혈중 농도 변화와 AUC 계산을, 인공지능 수학은 의료·사회 데이터의 분석과 판단을 연결할 수 있는 내용을 제시합니다.",url:"#"}
+ ]},
+ earth:{career:"지구·환경·기후·천문 계열은 관측 데이터를 분석하고 공간·시간에 따른 변화를 모델링하므로 AI 수학, 기하, 미적분이 서로 다른 방식으로 활용됩니다.",reasons:{ai:"기후·관측 데이터를 분류하고 미래 경향을 예측하는 데이터 모델링에 연결됩니다.",geometry:"좌표·벡터·공간 구조는 지구 공간 분석과 천체·궤도 이해에 직접 도움이 됩니다.",calc2:"대기·해양·기후 시스템의 연속적인 변화와 물리 모델을 이해하는 기초가 됩니다."},items:[
+  {school:"고려대 권장이수과목",text:"지구환경과학과 등 자연계열 모집단위에 수학·과학 권장이수과목을 구체적으로 안내하고 있습니다.",url:"https://oku.korea.ac.kr/oku/cms/CMN_CON/MainLink.do?BASE_SITE_NO=2&BBS_SEQ=1727&BOARD_SEQ=5&CONFIG_CD=C1435&CONFIG_SEQ=1&GBN=BA&SITE_NO=2&SUB_SEQ=2&TEMP_CODE=IPSI_C"},
+  {school:"선택과목 안내서",text:"기하에서는 항공·우주 궤도 설계, 미적분Ⅱ에서는 포물선 운동과 곡선 모델링 사례를 제시합니다.",url:"#"}
+ ]},
+ business:{career:"경제·경영·금융 계열은 경제수학·통계·계량분석과 데이터 기반 의사결정을 다루므로 미적분과 AI 수학이 모두 의미가 있습니다.",reasons:{ai:"데이터 분석, 예측, 최적화, 합리적 의사결정은 경영·금융·비즈니스 애널리틱스와 직접 연결됩니다.",geometry:"일반 경영·경제 전공에서는 직접 연계가 상대적으로 약하지만, 공간경제·물류·시각화 분야에서는 보조적으로 활용됩니다.",calc2:"경제수학, 한계 개념, 최적화, 금융 모델과 무한급수 등을 이해하는 기초가 됩니다."},items:[
+  {school:"서울대 경제학부",text:"학부 표준 이수과정에 경제수학, 경제통계학, 계량경제학이 포함되어 있습니다.",url:"https://econ.snu.ac.kr/announcement/notice?bbsidx=3474&bm=v&page=35"},
+  {school:"고려대 경영대학",text:"학부 AI와 경영 트랙에 AI와경영의수리적원리, 경영수학, 알고리즘기반경영의사결정 등이 편성되어 있습니다.",url:"https://biz.korea.ac.kr/undergraduate/concentration.html"}
+ ]},
+ social:{career:"사회·정책·미디어 계열에서는 과목이 필수로 지정되는 경우가 적지만, 조사자료 분석·여론·정책평가·AI 윤리를 탐구하려면 AI 수학이 차별화된 도구가 될 수 있습니다.",reasons:{ai:"사회 조사 데이터, 편향 분석, 예측과 공정성 문제를 수학적으로 탐구하는 데 가장 활용도가 높습니다.",geometry:"대부분의 사회계열에서는 직접 연계가 약하며, 도시·지리·공간정책을 다룰 때만 활용도가 높아집니다.",calc2:"일반 사회계열의 직접 연계는 낮지만 경제·정량정책·계량 분석으로 확장할 때 도움이 됩니다."},items:[
+  {school:"서울대 전공 연계 안내",text:"권장과목이 제시되지 않은 모집단위는 진로와 적성에 따라 선택과목을 적극적으로 이수하도록 안내하며, 단순 이수 여부보다 선택의 충실성을 함께 봅니다.",url:"https://admission.snu.ac.kr/materials/guide_movie/admission_guide"},
+  {school:"선택과목 안내서",text:"인공지능 수학의 사회·상경 심화 사례로 데이터 편향 분석, 공정한 AI 가이드라인, 판결 데이터의 차별 요소 탐구를 제시합니다.",url:"#"}
+ ]},
+ humanities:{career:"인문계열에서는 세 수학 과목의 직접 요구도가 높지 않지만, 디지털 인문학·텍스트 분석·언어 AI로 확장할 경우 인공지능 수학의 활용도가 커집니다.",reasons:{ai:"텍스트를 벡터·행렬로 바꾸고 패턴을 분석하는 경험이 디지털 인문학과 언어 AI에 연결됩니다.",geometry:"미술사·고고학·공간문화처럼 시각·공간 자료를 다룰 때 보조적으로 활용됩니다.",calc2:"일반 인문전공의 직접 연계는 낮으므로 흥미와 성취 가능성을 우선하는 것이 좋습니다."},items:[
+  {school:"서울대 전공 연계 안내",text:"권장과목이 없는 모집단위도 진로·적성에 따라 자유롭고 적극적인 선택과목 이수를 권장합니다.",url:"https://admission.snu.ac.kr/materials/guide_movie/admission_guide"},
+  {school:"선택과목 안내서",text:"인공지능 수학에서 텍스트·이미지를 벡터와 행렬로 표현하고 정보를 추출하는 활동을 제시합니다.",url:"#"}
+ ]},
+ education:{career:"교육계열에서는 가르칠 교과와 교육 데이터 관심에 따라 의미가 달라집니다. 수학교육·과학교육은 미적분과 기하의 직접 연계가 크고, 교육학은 AI·데이터 활용이 보조 역량이 됩니다.",reasons:{ai:"학습 데이터 분석, AI 교육, 디지털 교육자료 연구에 활용할 수 있습니다.",geometry:"수학교육·과학교육에서는 중요하지만 일반 교육학·초등교육에서는 직접 연계가 상대적으로 낮습니다.",calc2:"수학교육·과학교육과 자연계 교직 진로에서는 대학 전공 기초로 의미가 큽니다."},items:[
+  {school:"서울대 전공 연계 안내",text:"지원 전공의 학문적 특성을 고려한 과목 선택을 권장하며, 실제 학교의 개설 여건과 학생의 학습 과정을 함께 평가합니다.",url:"https://admission.snu.ac.kr/undergraduate/notice?bbsidx=156194&md=v"},
+  {school:"서울대 수리과학부",text:"대학 미적분학은 극한·미분·적분과 다변수함수·미분방정식까지 이어져 수학교육 전공의 내용 기반이 됩니다.",url:"https://www.math.snu.ac.kr/bbs/board.php?bo_table=Math_Courses"}
+ ]},
+ explore:{career:"진로가 아직 정해지지 않았다면 특정 과목의 이름보다 흥미, 현재 준비도, 다음 학년 과목 위계와 확장성을 함께 살펴보는 것이 좋습니다.",reasons:{ai:"여러 전공에서 활용되는 데이터·문제 해결 경험을 제공해 진로 탐색의 폭이 넓습니다.",geometry:"공학·건축·수학·공간 분야 가능성을 탐색할 수 있습니다.",calc2:"자연·공학·수학 계열 진학 가능성을 열어 두는 심화 기반이 됩니다."},items:[
+  {school:"서울대 전공 연계 안내",text:"고교 진로가 바뀔 수 있고 학교별 개설 여건도 다르므로, 미이수 자체보다 학생이 선택한 과목에서 보인 적극성과 충실성을 함께 평가한다고 설명합니다.",url:"https://admission.snu.ac.kr/materials/guide_movie/admission_guide"}
+ ]}
+};
+const MATH_COURSE_DETAILS={
+ ai:{title:"인공지능 수학",summary:"인공지능이 데이터를 학습하고 판단하는 원리를 수학적 도구로 살펴보는 과목입니다. 데이터를 수치와 벡터·행렬로 표현하고, 확률과 추세를 이용해 예측하며, 손실함수와 경사하강법을 통해 더 나은 선택을 찾는 과정을 탐구합니다.",keywords:["인공지능 개념","데이터","행렬과 데이터 표현","확률과 예측","미분과 최적화","합리적 의사결정"],units:[
+  {title:"인공지능과 빅데이터",text:"기계학습의 개념과 역사, 지도·비지도·강화학습의 특징, 데이터의 분류와 구성 방식을 살펴봅니다."},
+  {title:"텍스트·이미지 데이터 처리",text:"비정형 자료를 숫자로 바꾸고 벡터의 내적과 행렬 연산으로 텍스트 정보 추출, 이미지 변환·분류 원리를 탐구합니다."},
+  {title:"예측과 최적화",text:"확률과 추세선을 이용한 예측, 손실함수와 경사하강법의 개념을 통해 최적의 결정을 찾는 방법을 배웁니다."},
+  {title:"AI와 수학 탐구",text:"수학적 근거를 바탕으로 실제 문제를 해결하고, AI의 편향·공정성·윤리 문제를 자료와 함께 탐구합니다."}
+ ],activities:["픽셀 데이터를 행렬로 표현하고 이미지 분류 원리 탐구","자율주행·스마트 CCTV의 사물 분류 모델 기초 프로그래밍","판결·채용 데이터의 편향을 분석하고 공정한 AI 가이드라인 제안"],recommended:["AI·로봇·자율주행·빅데이터 기술에 관심 있는 학생","많은 데이터를 수치화하고 논리적 근거로 판단하는 과정을 즐기는 학생"],source:"서울특별시교육청교육연구정보원, 2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서 - 인공지능 수학"},
+ geometry:{title:"기하",summary:"평면과 공간에 있는 도형의 모양·크기·위치 관계를 좌표와 벡터로 표현하고 논리적으로 설명하는 과목입니다. 건축물, 3차원 그래픽, 로봇 운동, 천체 궤도처럼 공간 구조를 이해하는 데 활용됩니다.",keywords:["이차곡선","포물선·타원·쌍곡선","공간도형","공간좌표","벡터","직선과 평면의 방정식"],units:[
+  {title:"이차곡선",text:"포물선·타원·쌍곡선의 정의와 성질을 이해하고 기하적 대상과 대수식의 연결 관계를 탐구합니다."},
+  {title:"공간도형과 공간좌표",text:"3차원 공간의 위치 관계, 정사영, 좌표를 이용한 길이·넓이·부피 계산을 학습합니다."},
+  {title:"벡터",text:"벡터의 연산과 성분을 배우고 직선과 평면의 방정식, 공간에서의 방향과 이동을 수학적으로 표현합니다."}
+ ],activities:["타원·쌍곡선의 초점 성질을 이용한 케플러 궤도 탐구","정사영 원리로 비정형 건축물의 외벽·그림자 면적 계산","벡터 내적을 활용한 로봇 팔 관절의 이동 경로 모델링"],recommended:["컴퓨터공학·데이터과학·전기전자·기계공학·건축·항공우주 계열을 희망하는 학생","기하적 대상을 시각화하고 언어와 식으로 증명하는 것을 즐기는 학생"],source:"서울특별시교육청교육연구정보원, 2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서 - 기하"},
+ calc2:{title:"미적분Ⅱ",summary:"미적분Ⅰ에서 다룬 기본 개념을 바탕으로 수열의 극한과 급수, 초월함수의 미분, 여러 적분법을 배우며 복잡한 곡선과 변화 현상을 분석하는 과목입니다. 자연·공학·수학 계열의 대학 학습 기반과 강하게 연결됩니다.",keywords:["수열의 극한","급수","초월함수의 미분","합성함수·음함수 미분","치환적분","부분적분","입체도형의 부피"],units:[
+  {title:"수열의 극한과 급수",text:"수열과 급수의 극한, 수렴과 발산, 등비급수를 이해하고 무한한 과정의 값을 판단합니다."},
+  {title:"미분법",text:"지수·로그·삼각·역삼각함수와 합성·매개·음함수의 미분을 학습하고 그래프의 개형과 변화를 분석합니다."},
+  {title:"적분법",text:"치환적분과 부분적분 등 복잡한 함수의 적분 기법을 익히고 정적분으로 넓이와 입체도형의 부피를 계산합니다."}
+ ],activities:["매개변수로 도형과 포물선 운동 경로 표현","무한등비급수로 영구연금의 현재 가치 분석","약물 투여 뒤 혈중 농도 변화 함수와 AUC 계산"],recommended:["자연·공학·수학 계열처럼 대학에서 미적분 기초가 요구되는 진로를 희망하는 학생","미적분Ⅰ을 이수하고 더 심화된 수학 탐구를 이어가고 싶은 학생"],source:"서울특별시교육청교육연구정보원, 2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서 - 미적분Ⅱ"}
+};
+
+const course=(id,name,semester,block,difficulty,vector,desc,boost={})=>({id,name,semester,block,difficulty,vector,desc,boost});
+const GRADE_CONFIG={
+ 1:{
+   label:"1학년 → 2학년 과목 추천",cohort:"2029학년도 대입 대상",badge:"2029 세부계획 공개 전 · 2028 기준 참고",mathLimit:2,
+   mathDesc:"인공지능 수학은 2학년 1학기, 기하는 2학년 2학기 과목입니다. 서로 다른 학기이므로 두 과목 모두 높은 적합도가 나올 수 있습니다.",
+   blocks:[{id:"g1s1",title:"2학년 1학기 · 인공지능 수학과 함께 선택 가능한 과목",help:"인공지능 수학 선택 시기에 함께 검토하는 10개 과목"},{id:"g1s2",title:"2학년 2학기 · 기하와 함께 선택 가능한 과목",help:"기하 선택 시기에 함께 검토하는 9개 과목"}],
+   note:"2026년 현재 1학년은 2029학년도 대입 대상입니다. 대학별 2029 시행계획이 공개되기 전이므로 결과는 2028 대입 구조와 대학별 권장과목을 이용한 진로 상담 보조 자료입니다.",
+   courses:[
+    course("g1_ai","인공지능 수학","2학년 1학기","math",3,{math:4,data:5,calculus:2,social:1,ethics:1,research:4},"데이터 표현, 분류·예측, 최적화 등 AI에 활용되는 수학을 탐구",{ai:15,math:10,business:8,society:4,engineering:4}),
+    course("g1_geo","기하","2학년 2학기","math",4,{math:5,calculus:2,spatial:5,physics:3,earth:1,research:4},"도형, 좌표, 벡터와 공간 구조를 통해 수학·공학의 기초 역량 강화",{math:12,engineering:15,architecture:15,earth:5,ai:3}),
+    course("g1_worldEnglish","세계 문화와 영어","2학년 1학기","g1s1",2,{language:5,global:5,humanities:3,social:1,research:2},"세계 문화 이해와 영어 의사소통",{humanities:10,society:5,business:5,education:5}),
+    course("g1_worldHistory","세계사","2학년 1학기","g1s1",3,{humanities:5,global:4,social:3,language:2,research:4},"세계사의 흐름과 역사적 맥락 분석",{humanities:13,society:6,education:5}),
+    course("g1_worldGeo","세계시민과 지리","2학년 1학기","g1s1",3,{earth:4,global:5,social:4,spatial:2,data:2,research:4},"공간 정보, 환경, 국제 문제를 종합 탐구",{earth:10,architecture:8,society:8,business:4}),
+    course("g1_ethics","윤리와 사상","2학년 1학기","g1s1",3,{ethics:5,humanities:4,social:3,language:2,research:4},"철학적 사고와 윤리 쟁점 분석",{humanities:12,society:10,education:8,bio:3}),
+    course("g1_society","사회와 문화","2학년 1학기","g1s1",3,{social:5,data:3,humanities:2,language:2,research:5},"사회 현상, 조사 방법, 자료 해석",{society:13,business:9,education:6,ai:3}),
+    course("g1_physics","물리학","2학년 1학기","g1s1",4,{math:4,calculus:3,spatial:3,physics:5,data:1,research:5},"힘, 운동, 에너지와 공학적 문제 해결",{engineering:16,architecture:9,math:6,ai:5,earth:4}),
+    course("g1_chem","화학","2학년 1학기","g1s1",4,{math:3,calculus:2,physics:2,chemistry:5,biology:2,research:5},"물질의 구조·성질·반응과 실험 탐구",{chemical:16,bio:10,engineering:3}),
+    course("g1_bio","생명과학","2학년 1학기","g1s1",4,{data:2,chemistry:2,biology:5,ethics:2,research:5},"생명 현상, 유전, 생태와 보건 탐구",{bio:16,chemical:5,earth:3}),
+    course("g1_earth","지구과학","2학년 1학기","g1s1",4,{math:2,data:2,spatial:3,physics:2,chemistry:1,biology:1,earth:5,global:2,research:5},"지구 시스템, 기후, 우주와 환경 탐구",{earth:17,architecture:5,engineering:2}),
+    course("g1_hanja","언어생활과 한자","2학년 1학기","g1s1",2,{humanities:5,language:5,social:2,global:2,ethics:2,research:3},"어휘, 한자 문화, 문해력과 언어생활",{humanities:13,education:8,society:4}),
+    course("g1_engDebate","영어 발표와 토론","2학년 2학기","g1s2",3,{language:5,global:4,social:3,research:4},"영어로 조사·발표하고 논리적으로 토론",{humanities:9,society:8,business:6,education:8}),
+    course("g1_eastHistory","동아시아 역사 기행","2학년 2학기","g1s2",3,{humanities:5,global:4,language:2,social:3,research:4},"동아시아 역사와 지역 문화를 주제 중심으로 탐구",{humanities:13,society:6,education:5}),
+    course("g1_koreaGeo","한국지리 탐구","2학년 2학기","g1s2",3,{earth:4,spatial:4,social:4,data:2,global:2,research:5},"한국의 공간 구조, 지역 문제와 자료 탐구",{earth:11,architecture:10,society:7,business:4}),
+    course("g1_modernEthics","현대사회와 윤리","2학년 2학기","g1s2",3,{ethics:5,social:5,humanities:3,language:2,research:4},"현대 사회의 가치 충돌과 윤리 문제 분석",{society:13,humanities:10,education:8,bio:3}),
+    course("g1_politics","정치","2학년 2학기","g1s2",3,{social:5,ethics:3,language:3,global:3,data:1,research:4},"정치 제도, 권력, 시민 참여와 정책 이해",{society:15,business:5,education:5}),
+    course("g1_mechanics","역학과 에너지","2학년 2학기","g1s2",5,{math:5,calculus:4,spatial:4,physics:5,research:5},"운동·힘·에너지를 수학적으로 분석하는 심화 물리",{engineering:18,architecture:10,math:8,earth:4}),
+    course("g1_matterEnergy","물질과 에너지","2학년 2학기","g1s2",5,{math:4,calculus:3,physics:3,chemistry:5,research:5},"물질 변화와 에너지 관계를 심화 탐구",{chemical:18,engineering:6,bio:5}),
+    course("g1_cell","세포와 물질대사","2학년 2학기","g1s2",5,{data:2,chemistry:3,biology:5,research:5},"세포 구조와 물질대사의 원리를 심화 탐구",{bio:18,chemical:7}),
+    course("g1_space","행성우주과학","2학년 2학기","g1s2",5,{math:4,calculus:3,data:2,spatial:4,physics:4,earth:5,research:5},"행성, 우주 환경과 천문 현상을 수학·과학으로 탐구",{earth:18,engineering:5,math:5})
+   ]
+ },
+ 2:{
+   label:"2학년 → 3학년 1학기 과목 추천",cohort:"2028학년도 대입 대상",badge:"2028 대학별 시행계획 반영",mathLimit:1,
+   mathDesc:"미적분Ⅱ와 인공지능 수학은 같은 3학년 1학기 선택군입니다. 학교에서 한 과목만 선택해야 한다면 점수가 높은 과목을 우선 검토하세요.",
+   blocks:[{id:"g2s1",title:"3학년 1학기 · 미적분Ⅱ·인공지능 수학과 함께 선택 가능한 과목",help:"공개된 2028 대입 기준과 진로·성취 가능성을 함께 반영한 14개 과목"}],
+   note:"현재 2학년은 2028학년도 대입 대상입니다. 2028 대학별 시행계획이 공개되었으며, 학생부종합평가에서 전공 관련 과목의 적절한 선택, 과목 위계, 성취 수준을 함께 보는 대학이 있습니다.",
+   courses:[
+    course("g2_calc2","미적분Ⅱ","3학년 1학기","math",5,{math:5,calculus:5,data:2,physics:4,chemistry:2,earth:2,research:5},"극한·미분·적분의 심화 내용을 통해 자연·공학·수학 계열의 대학 학습 기반 강화",{math:18,engineering:18,architecture:12,chemical:13,ai:9,earth:8,business:5,bio:6}),
+    course("g2_ai","인공지능 수학","3학년 1학기","math",3,{math:4,calculus:2,data:5,social:2,ethics:1,research:4},"데이터, 모델링, 분류·예측 등 AI와 여러 분야의 수학적 활용 탐구",{ai:18,math:9,business:11,society:6,engineering:5,bio:4,earth:4}),
+    course("g2_socialProblem","사회문제와 탐구","3학년 1학기","g2s1",3,{social:5,data:3,ethics:3,language:3,research:5},"사회 문제를 자료 조사와 탐구 프로젝트로 분석",{society:15,business:7,education:8,ai:3}),
+    course("g2_modernWorld","역사로 탐구하는 현대 세계","3학년 1학기","g2s1",3,{humanities:5,global:5,social:4,language:3,research:5},"역사적 관점으로 현대 세계의 쟁점과 변화를 분석",{humanities:15,society:9,education:6}),
+    course("g2_futureCity","도시의 미래 탐구","3학년 1학기","g2s1",4,{math:2,data:4,spatial:5,earth:3,social:4,global:3,research:5},"도시 공간, 기술, 환경과 정책을 융합적으로 탐구",{architecture:17,earth:9,society:8,engineering:5,business:4}),
+    course("g2_ethics","현대사회와 윤리","3학년 1학기","g2s1",3,{ethics:5,social:5,humanities:3,language:2,research:4},"기술·생명·환경·정의 등 현대 윤리 쟁점 분석",{society:14,humanities:11,education:9,bio:5,ai:4}),
+    course("g2_economics","경제","3학년 1학기","g2s1",4,{math:4,calculus:2,data:4,social:5,global:3,research:4},"시장, 선택, 정책과 경제 자료를 수학적으로 해석",{business:18,society:8,ai:5,math:4}),
+    course("g2_quantum","전자기와 양자","3학년 1학기","g2s1",5,{math:5,calculus:5,spatial:3,physics:5,data:2,research:5},"전자기 현상과 양자 개념을 심화 수학·물리로 탐구",{engineering:19,math:10,ai:6,earth:4}),
+    course("g2_reaction","화학 반응의 세계","3학년 1학기","g2s1",5,{math:4,calculus:3,physics:2,chemistry:5,biology:2,research:5},"화학 반응의 원리, 에너지와 물질 변화를 심화 탐구",{chemical:19,bio:9,engineering:4}),
+    course("g2_genetics","생물의 유전","3학년 1학기","g2s1",5,{math:2,data:4,chemistry:2,biology:5,ethics:2,research:5},"유전 정보, 유전 현상과 생명과학 자료를 심화 탐구",{bio:19,ai:4,chemical:5}),
+    course("g2_earthSystem","지구시스템과학","3학년 1학기","g2s1",5,{math:3,calculus:2,data:4,spatial:3,physics:3,chemistry:2,earth:5,research:5},"대기·해양·지권의 상호작용을 시스템 관점에서 탐구",{earth:19,architecture:6,engineering:4}),
+    course("g2_climate","기후변화와 환경생태","3학년 1학기","g2s1",4,{data:4,chemistry:2,biology:4,earth:5,social:3,global:4,ethics:3,research:5},"기후 변화와 생태 문제를 과학·사회 관점에서 융합 탐구",{earth:17,bio:9,society:7,architecture:5}),
+    course("g2_dataScience","데이터 과학","3학년 1학기","g2s1",4,{math:4,calculus:2,data:5,social:2,language:1,research:5},"데이터 수집·처리·분석과 모델링을 실제 문제에 적용",{ai:19,math:11,business:12,society:7,engineering:5,bio:4,earth:5}),
+    course("g2_japan","일본 문화","3학년 1학기","g2s1",2,{language:4,global:5,humanities:4,social:2,research:3},"일본의 언어·생활·역사·문화를 이해",{humanities:12,society:5,business:4,education:5}),
+    course("g2_china","중국 문화","3학년 1학기","g2s1",2,{language:4,global:5,humanities:4,social:2,research:3},"중국의 언어·생활·역사·문화를 이해",{humanities:12,society:5,business:5,education:5}),
+    course("g2_classics","한문고전 읽기","3학년 1학기","g2s1",3,{language:5,humanities:5,ethics:3,social:2,research:4},"한문 고전을 읽고 문해력·사상·문화 이해를 심화",{humanities:16,education:9,society:5})
+   ]
+ }
+};
+const COMMON_OPTIONS={
+ major:Object.entries(MAJORS).map(([value,item])=>({value,label:item.name,sub:value==="undecided"?"여러 분야를 넓게 탐색하고 싶음":"이 분야에 필요한 과목을 우선 분석"})),
+ mathConfidence:[5,4,3,2,1].map(v=>({value:String(v),label:["낮음","다소 낮음","보통","중상","높음"][v-1],sub:v>=4?"낯선 개념도 꾸준히 해결하는 편":v===3?"단원에 따라 자신감 차이가 있음":"기초 복습과 학습 지원이 필요함"})),
+ workload:[5,4,3,2,1].map(v=>({value:String(v),label:["현재는 성적 안정이 우선","난도와 과목 수를 신중히 조절","도전과 안정의 균형","전공 관련 과목은 적극 도전","심화 과목을 깊게 공부하고 싶음"][v-1],sub:v>=4?"높은 탐구 강도 감당 가능":v===3?"균형형":"부담 관리가 중요"})),
+ admission:[{value:"holistic",label:"학생부종합 중심",sub:"전공 관련 과목 선택, 위계, 탐구 경험 중시"},{value:"grades",label:"학생부교과 중심",sub:"과목 이수와 안정적인 성취를 함께 고려"},{value:"csat",label:"정시·수능 중심",sub:"수능 준비와 학교 과목의 균형 고려"},{value:"undecided",label:"아직 미정",sub:"여러 전형 가능성을 열어 둠"}],
+ clarity:[{value:"clear",label:"희망 분야가 비교적 확실하다",sub:"전공 연계성을 강하게 반영",vector:{research:2}},{value:"two",label:"두세 분야 사이에서 고민 중이다",sub:"인접 분야와 융합 가능성을 반영",vector:{data:1,global:1,research:1}},{value:"open",label:"아직 많이 바뀔 수 있다",sub:"확장성이 높은 과목을 더 반영",vector:{data:1,social:1,humanities:1,language:1,research:1}}],
+ decision:[{value:"major",label:"희망 전공과의 직접적인 연계",sub:"대학 학습에 필요한 기초와 연결"},{value:"interest",label:"실제로 흥미를 느끼고 몰입할 수 있는가",sub:"지속적인 탐구 가능성"},{value:"achievement",label:"충실히 공부해 성취를 낼 수 있는가",sub:"난도와 현재 준비도 균형"},{value:"breadth",label:"진로가 바뀌어도 활용 범위가 넓은가",sub:"균형과 확장성"}]
+};
+function questionsFor(grade){
+ const commonStart=[
+  {id:"major",title:"현재 가장 관심 있는 진로·전공 분야는 무엇인가요?",help:"먼저 넓은 계열을 선택합니다. 다음 질문에서 실제 학과를 더 구체적으로 고를 수 있습니다.",options:COMMON_OPTIONS.major},
+  {id:"department",title:"조금 더 구체적으로 생각 중인 학과는 무엇인가요?",help:"대학의 실제 학과명과 가까운 항목을 선택하세요. 선택 결과는 수학 과목의 전공 연계 점수에 반영됩니다.",options:()=>departmentOptionsFor(state.answers.major)},
+  {id:"careerGoal",title:"그 학과를 졸업한 뒤 어떤 일을 해보고 싶나요?",help:"희망 직업이 확실하지 않다면 가장 끌리는 활동을 기준으로 선택하세요.",options:CAREER_OPTIONS}
+ ];
+ if(grade===1)return [...commonStart,
+  {id:"mathStyle",title:"수학에서 가장 흥미를 느끼는 방식은 무엇인가요?",help:"성적이 아니라 문제를 바라보는 방식에 가깝게 답하세요.",options:[{value:"data",label:"자료와 패턴을 찾아 예측하기",sub:"표, 그래프, 확률, 데이터 분석",vector:{data:5,math:2,research:2}},{value:"spatial",label:"도형과 공간을 머릿속으로 그리기",sub:"좌표, 벡터, 공간 구조, 설계",vector:{spatial:5,math:3,physics:2}},{value:"logic",label:"원리와 논리를 차근차근 설명하기",sub:"수학적 추론과 증명",vector:{math:5,calculus:2,research:4}},{value:"application",label:"현실 문제에 수학을 적용하기",sub:"경제, 사회, 과학 문제 해석",vector:{math:3,data:3,social:2,research:3}}]},
+  {id:"dataInterest",title:"AI·데이터를 활용하는 활동에 얼마나 관심이 있나요?",help:"인공지능 수학과 데이터 관련 과목의 적합도를 조정합니다.",options:[{value:"5",label:"매우 관심 있다",sub:"데이터 분석·코딩·예측 모델을 해보고 싶음",vector:{data:5,math:2,research:3}},{value:"4",label:"관심 있는 편이다",sub:"기회가 있으면 적극 참여",vector:{data:4,research:2}},{value:"3",label:"보통이다",sub:"진로에 필요하면 배울 수 있음",vector:{data:2,research:1}},{value:"2",label:"관심이 적은 편이다",sub:"다른 방식의 수학이 더 끌림",vector:{data:1}},{value:"1",label:"거의 관심이 없다",sub:"AI보다 다른 분야에 집중",vector:{data:0}}]},
+  {id:"spatialSense",title:"도형·지도·설계도처럼 공간 정보를 다루는 활동은 어떤가요?",help:"기하, 역학, 지리, 우주 관련 과목의 적합도를 조정합니다.",options:[{value:"5",label:"매우 흥미롭고 비교적 잘한다",sub:"공간 구조를 상상하는 편",vector:{spatial:5,math:3}},{value:"4",label:"흥미 있고 연습하면 잘할 수 있다",sub:"기하 학습 의지가 있음",vector:{spatial:4,research:2}},{value:"3",label:"보통이다",sub:"단원에 따라 다름",vector:{spatial:2,research:1}},{value:"2",label:"다소 어렵게 느낀다",sub:"단계적 연습이 필요",vector:{spatial:1}},{value:"1",label:"매우 부담스럽다",sub:"공간 도형보다 다른 영역 선호",vector:{spatial:0}}]},
+  ...interestQuestions(),
+  {id:"activity",title:"가장 오래 몰입할 수 있는 수업 활동은 무엇인가요?",help:"학생부에 남길 수 있는 실제 학습 방식과 연결합니다.",options:activityOptions()},
+  {id:"mathConfidence",title:"현재 수학 학습에 대한 자신감은 어느 정도인가요?",help:"낮게 답해도 관련 과목을 제외하지 않고 필요한 학습 지원을 안내합니다.",options:COMMON_OPTIONS.mathConfidence},
+  {id:"workload",title:"2학년 학업 부담을 어떻게 계획하고 있나요?",help:"전공 연계성과 성취 가능성의 균형을 반영합니다.",options:COMMON_OPTIONS.workload},
+  {id:"admission",title:"현재 더 비중을 두는 대입 준비 방식은 무엇인가요?",help:"2029 세부계획은 공개 전이므로 현재의 대략적인 방향만 선택하세요.",options:COMMON_OPTIONS.admission},
+  {id:"careerClarity",title:"희망 진로가 바뀔 가능성은 어느 정도인가요?",help:"진로가 유동적이면 지나치게 좁은 조합보다 확장성을 반영합니다.",options:COMMON_OPTIONS.clarity},
+  {id:"decisionValue",title:"과목을 선택할 때 가장 중요한 기준은 무엇인가요?",help:"추천 결과의 마지막 우선순위를 조정합니다.",options:COMMON_OPTIONS.decision}
+ ];
+ return [...commonStart,
+  {id:"calculusReadiness",title:"대수·미적분Ⅰ에서 함수의 변화, 극한, 미분 개념은 어느 정도 준비되어 있나요?",help:"미적분Ⅱ는 앞 단계 개념의 이해와 꾸준한 문제 해결이 특히 중요합니다.",options:[{value:"5",label:"개념이 탄탄하고 심화 문제도 도전할 수 있다",sub:"미적분Ⅱ의 위계 학습에 충분히 준비",vector:{calculus:5,math:4,research:3}},{value:"4",label:"기본 개념은 이해했고 복습하면 심화 가능하다",sub:"적극적인 선택 검토 가능",vector:{calculus:4,math:3,research:2}},{value:"3",label:"단원별로 이해도 차이가 있다",sub:"취약 단원 복습 계획 필요",vector:{calculus:2,math:2,research:2}},{value:"2",label:"기본 개념이 아직 불안하다",sub:"미적분Ⅱ 선택 시 선행 복습 필요",vector:{calculus:1,math:1}},{value:"1",label:"현재 큰 부담을 느낀다",sub:"기초 회복이 우선",vector:{calculus:0,math:1}}]},
+  {id:"dataInterest",title:"데이터를 분석하고 규칙을 찾아 모델을 만드는 활동은 어떤가요?",help:"인공지능 수학과 데이터 과학의 적합도를 구분합니다.",options:[{value:"5",label:"매우 흥미롭고 직접 프로젝트를 해보고 싶다",sub:"AI·데이터 계열 탐구 선호",vector:{data:5,math:3,research:4}},{value:"4",label:"관심이 많고 진로에도 도움이 될 것 같다",sub:"데이터 기반 탐구 선호",vector:{data:4,research:3}},{value:"3",label:"필요하면 배울 수 있다",sub:"중립",vector:{data:2,research:1}},{value:"2",label:"수식 중심 학습이 더 편하다",sub:"데이터 활동 관심이 낮음",vector:{data:1,math:2}},{value:"1",label:"거의 관심이 없다",sub:"다른 영역을 우선",vector:{data:0}}]},
+  {id:"mathStyle",title:"3학년 수학에서 더 깊게 공부하고 싶은 방향은 무엇인가요?",help:"미적분Ⅱ와 인공지능 수학의 우선순위를 직접 구분하는 질문입니다.",options:[{value:"calc",label:"함수의 변화와 미분·적분을 더 깊게 공부",sub:"자연·공학·수학의 기초를 강화",vector:{calculus:5,math:5,physics:2,research:4}},{value:"ai",label:"데이터·확률·모델링을 실제 문제에 적용",sub:"AI·데이터·경제·사회 융합",vector:{data:5,math:4,social:2,research:4}},{value:"both",label:"두 방향 모두 중요하다",sub:"전공 기초와 응용을 함께 고려",vector:{calculus:3,data:3,math:4,research:3}},{value:"other",label:"수학보다 다른 전공 관련 과목을 우선하고 싶다",sub:"연계 선택과목의 진로 적합성을 더 반영",vector:{social:1,humanities:1,biology:1,earth:1,chemistry:1}}]},
+  ...interestQuestions(),
+  {id:"activity",title:"3학년 1학기 과목에서 가장 보여주고 싶은 학습 경험은 무엇인가요?",help:"2028 학생부 평가에서 과목명뿐 아니라 이수 노력과 성취·탐구 과정이 중요하다는 점을 반영합니다.",options:activityOptions()},
+  {id:"mathConfidence",title:"현재 수학 과목에서 꾸준히 성취를 낼 자신감은 어느 정도인가요?",help:"전공 연계성만으로 무리한 선택을 하지 않도록 반영합니다.",options:COMMON_OPTIONS.mathConfidence},
+  {id:"workload",title:"3학년 1학기 학업 부담을 어느 정도 감당할 수 있나요?",help:"수능 준비와 내신·탐구 과목의 균형을 고려하세요.",options:COMMON_OPTIONS.workload},
+  {id:"admission",title:"현재 가장 현실적으로 준비하는 2028 대입 전형은 무엇인가요?",help:"대학별 전형이 다르므로 최종적으로는 희망 대학 시행계획을 확인해야 합니다.",options:COMMON_OPTIONS.admission},
+  {id:"careerClarity",title:"지원하려는 계열이나 학과가 어느 정도 정해졌나요?",help:"전공이 확실할수록 권장과목과 위계 이수를 더 강하게 반영합니다.",options:COMMON_OPTIONS.clarity},
+  {id:"decisionValue",title:"마지막 과목 선택에서 가장 중요한 기준은 무엇인가요?",help:"전공 연계, 흥미, 성취 가능성, 확장성 중 우선순위를 선택하세요.",options:COMMON_OPTIONS.decision}
+ ];
+}
+function interestQuestions(){return [
+ {id:"scienceInterest",title:"자연과학 중 가장 깊게 탐구하고 싶은 분야는 무엇인가요?",help:"희망 진로가 아니더라도 순수한 관심을 기준으로 선택할 수 있습니다.",options:[{value:"physics",label:"힘·운동·전기·양자·기계",sub:"물리·공학",vector:{physics:5,math:3,calculus:2,spatial:2}},{value:"chemistry",label:"물질의 구조와 화학 반응",sub:"화학·신소재·약학",vector:{chemistry:5,math:1,research:3}},{value:"biology",label:"세포·유전·질병과 생명 현상",sub:"생명·의약·보건",vector:{biology:5,chemistry:2,data:2,ethics:1}},{value:"earth",label:"기후·지구 시스템·환경·우주",sub:"지구·환경·천문",vector:{earth:5,data:2,spatial:2,global:2}},{value:"none",label:"자연과학보다 다른 분야가 더 관심 있다",sub:"사회·인문·언어 관심을 더 반영",vector:{social:1,humanities:1,language:1}}]},
+ {id:"socialInterest",title:"인문·사회 분야에서는 어떤 주제가 가장 끌리나요?",help:"자연계 희망 학생도 융합 관심을 확인하기 위한 질문입니다.",options:[{value:"economy",label:"경제 현상과 자료를 분석하기",sub:"경제·경영·금융",vector:{social:4,data:4,math:2,global:2}},{value:"society",label:"사회 문제·정치·제도를 조사하고 토론하기",sub:"정치·행정·법·사회과학",vector:{social:5,ethics:3,language:2,research:3}},{value:"global",label:"도시·지역·국가·환경의 관계 이해하기",sub:"지리·도시·국제·환경",vector:{global:5,earth:3,spatial:2,social:3}},{value:"history",label:"역사와 문화의 흐름을 해석하기",sub:"역사·문화·언어",vector:{humanities:5,global:4,language:2,research:3}},{value:"ethics",label:"기술과 사회의 가치 문제를 판단하기",sub:"윤리·철학·정책",vector:{ethics:5,social:3,humanities:2}}]}
+]}
+function activityOptions(){return [{value:"model",label:"수학·데이터로 모델을 만들고 분석하기",sub:"그래프, 통계, 코딩, 시뮬레이션",vector:{math:3,data:5,research:4}},{value:"solve",label:"어려운 개념과 문제를 오래 파고들기",sub:"수학적 추론과 심화 문제 해결",vector:{math:5,calculus:4,research:5}},{value:"experiment",label:"실험·관찰로 가설을 검증하기",sub:"과학 탐구, 변인 통제, 결과 분석",vector:{physics:2,chemistry:2,biology:2,earth:2,data:2,research:5}},{value:"debate",label:"자료를 조사해 발표하고 토론하기",sub:"사회·윤리·역사·언어 탐구",vector:{social:4,ethics:3,humanities:2,language:4,research:4}}]}
+function departmentOptionsFor(majorKey){return DEPARTMENT_GROUPS[majorKey]||DEPARTMENT_GROUPS.undecided}
+function getQuestionOptions(q){return typeof q.options==='function'?q.options():q.options}
+function mathDetailKey(courseOrId){const id=typeof courseOrId==='string'?courseOrId:courseOrId?.id||'';if(id==='g1_geo')return'geometry';if(id==='g2_calc2')return'calc2';if(id==='g1_ai'||id==='g2_ai')return'ai';return null}
+
+const state={grade:1,currentQuestion:0,answers:{},results:null,selected:new Set(),settings:{schoolName:"수학 선택과목 나침반",recommendCount:3,teacherNote:"담임·진로교사와 상담하고 학교 편제표를 확인한 뒤 최종 선택하세요."}};
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+function config(){return GRADE_CONFIG[state.grade]} function questions(){return questionsFor(state.grade)} function courses(){return config().courses}
+function loadSettings(){try{const saved=JSON.parse(localStorage.getItem("mathCourseSelectorSettingsV2")||"null");if(saved)state.settings={...state.settings,...saved}}catch(e){}applySettings()}
+function applySettings(){$("#brandText").textContent=state.settings.schoolName;document.title=state.settings.schoolName;$("#schoolNameInput").value=state.settings.schoolName;$("#recommendCountInput").value=String(state.settings.recommendCount);$("#teacherNoteInput").value=state.settings.teacherNote}
+function saveSettings(){state.settings.schoolName=$("#schoolNameInput").value.trim()||"수학 선택과목 나침반";state.settings.recommendCount=Number($("#recommendCountInput").value)||3;state.settings.teacherNote=$("#teacherNoteInput").value.trim()||"담임·진로교사와 상담하고 학교 편제표를 확인한 뒤 최종 선택하세요.";try{localStorage.setItem("mathCourseSelectorSettingsV2",JSON.stringify(state.settings))}catch(e){}applySettings();closeModal("settingsModal");toast("교사용 설정을 저장했습니다.")}
+function showScreen(id){$$('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+function startSurvey(grade){state.grade=Number(grade);state.currentQuestion=0;state.answers={};state.results=null;state.selected=new Set();$("#gradeModeLabel").textContent=config().label;showScreen('#surveyScreen');renderQuestion()}
+function renderQuestion(){const qs=questions(),q=qs[state.currentQuestion],options=getQuestionOptions(q),answered=state.answers[q.id];if(answered&&!options.some(o=>o.value===answered)){delete state.answers[q.id]}$("#progressLabel").textContent=`질문 ${state.currentQuestion+1} / ${qs.length}`;$("#progressFill").style.width=`${(state.currentQuestion+1)/qs.length*100}%`;$("#questionNumber").textContent=`QUESTION ${String(state.currentQuestion+1).padStart(2,'0')}`;$("#questionTitle").textContent=q.title;$("#questionHelp").textContent=q.help;$("#prevBtn").disabled=state.currentQuestion===0;$("#nextBtn").textContent=state.currentQuestion===qs.length-1?'결과 보기':'다음';$("#nextBtn").disabled=!state.answers[q.id];const list=$("#optionList");list.innerHTML='';options.forEach((o,i)=>{const b=document.createElement('button');b.type='button';b.className=`option-button${state.answers[q.id]===o.value?' selected':''}`;b.innerHTML=`<span class="option-letter">${i<26?String.fromCharCode(65+i):i+1}</span><span class="option-main"><strong>${esc(o.label)}</strong><span>${esc(o.sub||'')}</span></span>`;b.onclick=()=>{state.answers[q.id]=o.value;if(q.id==='major')delete state.answers.department;renderQuestion()};list.appendChild(b)})}
+function nextQuestion(){const qs=questions(),q=qs[state.currentQuestion];if(!state.answers[q.id])return;if(state.currentQuestion<qs.length-1){state.currentQuestion++;renderQuestion();window.scrollTo({top:0,behavior:'smooth'})}else{calculate();renderResults();showScreen('#resultScreen');window.scrollTo({top:0,behavior:'smooth'});setTimeout(playCelebration,80)}}
+function prevQuestion(){if(state.currentQuestion>0){state.currentQuestion--;renderQuestion()}}
+function emptyVector(){return Object.fromEntries(Object.keys(DIMENSIONS).map(k=>[k,0]))} function addVector(t,s,m=1){if(!s)return;Object.entries(s).forEach(([k,v])=>t[k]=(t[k]||0)+v*m)}
+function selectedOption(qid){const q=questions().find(x=>x.id===qid);return q?getQuestionOptions(q).find(x=>x.value===state.answers[qid]):undefined}
+function cosine(a,b){let dot=0,aa=0,bb=0;Object.keys(DIMENSIONS).forEach(k=>{const x=a[k]||0,y=b[k]||0;dot+=x*y;aa+=x*x;bb+=y*y});return aa&&bb?dot/(Math.sqrt(aa)*Math.sqrt(bb))*100:0}
+function calculate(){const majorKey=state.answers.major,major=MAJORS[majorKey],department=DEPARTMENT_BY_ID[state.answers.department]||departmentOptionsFor(majorKey)[0],career=selectedOption('careerGoal'),profile=emptyVector();addVector(profile,major.vector,2.1);addVector(profile,department.vector,2.0);questions().forEach(q=>{const o=selectedOption(q.id);if(o?.vector)addVector(profile,o.vector,1.3)});const mathConfidence=Number(state.answers.mathConfidence||3),workload=Number(state.answers.workload||3),calcReady=Number(state.answers.calculusReadiness||3),admission=state.answers.admission,decision=state.answers.decisionValue,clarity=state.answers.careerClarity;
+ const scored=courses().map(c=>{let score=cosine(profile,c.vector)*.8+14;let bonus=(c.boost[majorKey]||0)+(department.courseBoost?.[c.id]||0);if(decision==='major')bonus*=1.14;if(decision==='interest'&&cosine(profile,c.vector)>73)bonus+=3;if(decision==='breadth'&&['g1_ai','g1_worldGeo','g1_society','g1_worldEnglish','g2_ai','g2_dataScience','g2_socialProblem','g2_futureCity','g2_climate'].includes(c.id))bonus+=4;if(admission==='holistic'){bonus+=major.type==='natural'&&(['g1_geo','g1_physics','g1_chem','g1_bio','g1_earth','g1_mechanics','g1_matterEnergy','g1_cell','g1_space','g2_calc2','g2_quantum','g2_reaction','g2_genetics','g2_earthSystem','g2_dataScience'].includes(c.id))?4:1}if(admission==='grades')score-=Math.max(0,c.difficulty-workload)*2;if(admission==='csat'&&['g1_geo','g2_calc2'].includes(c.id))score-=1;
+ const gap=Math.max(0,c.difficulty-Math.min(mathConfidence,workload));if(c.vector.math>=3||c.vector.physics>=4||c.vector.chemistry>=4)score-=gap*1.9;if(state.grade===2&&c.id==='g2_calc2')score-=Math.max(0,4-calcReady)*3.2;if(state.grade===2&&c.id==='g2_ai')score+=Number(state.answers.dataInterest||3)-3;if(clarity==='open'&&['g1_worldEnglish','g1_worldGeo','g1_society','g2_dataScience','g2_socialProblem','g2_futureCity','g2_climate'].includes(c.id))bonus+=3;score=Math.round(Math.max(40,Math.min(98,score+bonus)));return{...c,score,reasons:reasons(c,profile,major,department,mathConfidence,workload,calcReady)}});
+ const mathCourses=scored.filter(c=>c.block==='math').sort((a,b)=>b.score-a.score);const linkedByBlock=Object.fromEntries(config().blocks.map(b=>[b.id,scored.filter(c=>c.block===b.id).sort((a,b)=>b.score-a.score)]));const top=Object.entries(profile).sort((a,b)=>b[1]-a[1]).slice(0,5),max=Math.max(...Object.values(profile));state.results={majorKey,major,department,career,profile,mathConfidence,workload,calcReady,admission,mathCourses,linkedByBlock,topDimensions:top.map(([key,value])=>({key,name:DIMENSIONS[key],value,percent:Math.round(value/max*100)}))}}
+function reasons(c,p,major,department,confidence,workload,calcReady){const contrib=Object.entries(c.vector).filter(([,v])=>v>0).map(([k,v])=>({k,v:v*(p[k]||0)})).sort((a,b)=>b.v-a.v).slice(0,2).map(x=>DIMENSIONS[x.k]);const out=[`${contrib.join('·')} 성향과 잘 맞습니다.`,`${department.label} 진로와의 연계성을 반영했습니다.`];if(c.id==='g2_calc2'&&calcReady<=2)out.push('미적분Ⅰ 기초 복습과 충분한 문제 해결 시간이 필요합니다.');else if(c.difficulty>=4&&(confidence<=2||workload<=2))out.push('관련성은 높지만 기초 복습과 학습 시간 확보가 필요합니다.');else if(c.difficulty>=4)out.push('과목 위계에 맞는 개념 이해와 꾸준한 심화 탐구가 중요합니다.');else out.push('다른 과목과 연결한 탐구 주제를 만들기 좋습니다.');return out}
+function label(score){if(score>=84)return{text:'매우 높음',cls:'fit-high'};if(score>=70)return{text:'높음',cls:'fit-high'};if(score>=58)return{text:'적합',cls:'fit-mid'};return{text:'탐색',cls:'fit-low'}}
+function renderResults(){const r=state.results,c=config();$("#resultEyebrow").textContent=`${state.grade}학년 진로·성향 진단 완료`;$("#resultTitle").textContent=c.label;$("#resultSubtitle").textContent=`${r.department.label} 진로를 중심으로 ${questions().length}개 응답을 분석했습니다.`;$("#resultBadge").textContent=c.badge;$("#cohortNote").textContent=c.note;$("#mathSectionDesc").textContent=c.mathDesc;$("#selectionHelp").textContent=state.settings.teacherNote;renderProfile();renderCelebration();renderDepartmentFit();renderMath();renderBlocks();renderAdvice();renderChecks();updateSummary();renderReference()}
+function renderCelebration(){const top=state.results.mathCourses[0], second=state.results.mathCourses[1];const lead=state.grade===1?`현재 응답 기준으로 ${top.name}이(가) 2학년 수학 과목 중 가장 높은 적합도를 보였습니다.`:`현재 응답 기준으로 ${top.name}이(가) 3학년 1학기 수학 과목 중 가장 먼저 추천됩니다.`;$("#celebrationTitle").textContent=state.grade===1?"당신에게 가장 잘 맞는 2학년 수학 과목은":"당신에게 가장 잘 맞는 3학년 1학기 수학 과목은";$("#celebrationLead").textContent=lead;$("#winnerCourse").textContent=top.name;$("#winnerSemester").textContent=`${top.semester} · ${state.results.department.label} 진로 기준`;$("#winnerScore").textContent=String(top.score);$("#winnerReason").textContent=top.reasons[0];$("#winnerDetailBtn").dataset.courseDetail=top.id;const tags=[`희망 학과 · ${state.results.department.label}`,`핵심 역량 · ${state.results.topDimensions[0]?.name||''}`,`추천 강도 · ${label(top.score).text}`];if(second)tags.push(`다음 후보 · ${second.name} ${second.score}점`);$("#celebrationTags").innerHTML=tags.map(x=>`<span class="celebration-tag">${esc(x)}</span>`).join('')}
+function playCelebration(){const card=$("#celebrationCard");if(!card)return;card.classList.remove('play');void card.offsetWidth;card.classList.add('play');spawnConfetti()}
+function spawnConfetti(){const layer=$("#confettiLayer");if(!layer)return;layer.innerHTML='';const colors=['#ffd978','#ffffff','#8fc5ff','#ff8da1','#8df0c2','#c4a1ff'];for(let i=0;i<38;i++){const piece=document.createElement('span');piece.className='confetti-piece';piece.style.setProperty('--piece-left',`${Math.random()*100}%`);piece.style.setProperty('--piece-delay',`${Math.random()*260}ms`);piece.style.setProperty('--piece-duration',`${2100+Math.random()*900}ms`);piece.style.setProperty('--piece-drift',`${-80+Math.random()*160}px`);piece.style.setProperty('--piece-rotate',`${-260+Math.random()*520}deg`);piece.style.setProperty('--piece-color',colors[Math.floor(Math.random()*colors.length)]);piece.style.width=`${8+Math.random()*8}px`;piece.style.height=`${12+Math.random()*18}px`;layer.appendChild(piece)}for(let i=0;i<10;i++){const star=document.createElement('span');star.className='confetti-star';star.style.setProperty('--piece-left',`${18+Math.random()*64}%`);star.style.setProperty('--piece-top',`${18+Math.random()*42}%`);star.style.setProperty('--piece-delay',`${100+Math.random()*420}ms`);layer.appendChild(star)}clearTimeout(spawnConfetti.timer);spawnConfetti.timer=setTimeout(()=>{if(layer)layer.innerHTML=''},3200)}
+
+function renderDepartmentFit(){const r=state.results,info=UNIVERSITY_EVIDENCE[r.department.category]||UNIVERSITY_EVIDENCE.explore,careerLabel=r.career?.label||'진로 탐색 중';$("#departmentNameCard").innerHTML=`<small>희망 학과</small><strong>${esc(r.department.label)}</strong><p>${esc(r.department.sub)}</p>`;$("#careerResultCard").innerHTML=`<h3>졸업 후 해보고 싶은 일</h3><p><strong>${esc(careerLabel)}</strong><br>${esc(info.career)}</p>`;const topScore=Math.max(...r.mathCourses.map(c=>c.score));$("#departmentCourseFit").innerHTML=r.mathCourses.map(c=>{const key=mathDetailKey(c),reason=info.reasons[key]||'희망 학과의 대학 학습과 연결되는 정도를 진로·성향과 함께 분석했습니다.';return`<article class="department-course-card ${c.score===topScore?'best':''}"><div class="department-course-top"><strong>${esc(c.name)}</strong><span class="advantage-pill">${c.score===topScore?'가장 추천':'연계 검토'}</span></div><p>${esc(reason)}</p><button class="course-detail-btn" type="button" data-course-detail="${c.id}">배우는 내용 자세히 보기</button></article>`}).join('');$("#universityEvidence").innerHTML=`<h3>실제 대학 교과과정·권장과목 사례</h3><div class="evidence-list">${info.items.map(item=>`<div class="evidence-item"><span class="evidence-school">${esc(item.school)}</span><span>${esc(item.text)} ${item.url==='#'?'':`<a href="${item.url}" target="_blank" rel="noopener">공식 자료 보기</a>`}</span></div>`).join('')}</div>`}
+function openCourseDetail(courseId){const key=mathDetailKey(courseId),detail=MATH_COURSE_DETAILS[key];if(!detail)return;$("#courseDetailTitle").textContent=detail.title;$("#courseDetailBody").innerHTML=`<div class="course-detail-intro">${esc(detail.summary)}<div class="detail-keywords">${detail.keywords.map(x=>`<span class="detail-keyword">${esc(x)}</span>`).join('')}</div></div><div class="detail-grid">${detail.units.map(u=>`<article class="detail-unit"><h3>${esc(u.title)}</h3><p>${esc(u.text)}</p></article>`).join('')}</div><section class="detail-section"><h3>심화 탐구 활동 예시</h3><ul>${detail.activities.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section><section class="detail-section"><h3>이런 학생에게 추천</h3><ul>${detail.recommended.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section><div class="detail-source">자료 출처: ${esc(detail.source)}. 화면의 내용은 업로드된 선택과목 안내 자료를 학생용으로 요약한 것입니다.</div>`;openModal('courseDetailModal')}
+
+function renderProfile(){$("#profileTags").innerHTML=[state.results.department.label,state.results.major.name,...state.results.topDimensions.slice(0,3).map(x=>x.name)].map(x=>`<span class="profile-tag">${esc(x)}</span>`).join('');$("#dimensionScores").innerHTML=state.results.topDimensions.map(x=>`<div><div class="score-head"><span class="score-name">${esc(x.name)}</span><span class="score-value">${x.percent}</span></div><div class="score-track"><div class="score-bar" style="width:${x.percent}%"></div></div></div>`).join('')}
+function renderMath(){const top=Math.max(...state.results.mathCourses.map(c=>c.score));$("#mathRecommendations").innerHTML=state.results.mathCourses.map(c=>{const l=label(c.score);return`<article class="course-feature ${c.score===top?'top-course':''}"><div class="course-topline"><div><h3>${esc(c.name)}</h3><span class="semester">${esc(c.semester)}</span></div><div class="course-score">${c.score}<small>적합도</small></div></div><span class="course-label">${l.text}</span><p style="font-size:13px;color:#526174;margin-bottom:12px">${esc(c.desc)}</p><ul class="reason-list">${c.reasons.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><button class="course-detail-btn" type="button" data-course-detail="${c.id}">이 과목에서 무엇을 배우나요?</button></article>`}).join('')}
+function renderBlocks(){$("#linkedBlocks").innerHTML=config().blocks.map(b=>`<section class="block-card"><div class="block-head"><h3>${esc(b.title)}</h3><p>${esc(b.help)}</p></div><div class="course-table-wrap"><table class="course-table"><thead><tr><th>순위</th><th>과목</th><th>적합도</th><th>추천 이유</th></tr></thead><tbody>${state.results.linkedByBlock[b.id].map((c,i)=>{const l=label(c.score);return`<tr><td><span class="rank">${i+1}</span></td><td class="course-name-cell"><strong>${esc(c.name)}</strong><span>${esc(c.desc)}</span></td><td><span class="fit-pill ${l.cls}">${c.score} · ${l.text}</span></td><td>${esc(c.reasons[0])}</td></tr>`}).join('')}</tbody></table></div></section>`).join('')}
+function renderAdvice(){const r=state.results,lines=[];if(state.grade===2){lines.push('2028 수능 수학의 직접 출제 범위는 대수·미적분Ⅰ·확률과 통계이며 미적분Ⅱ는 직접 출제 범위가 아닙니다. 그러나 자연·공학계열에서는 대학 학습 준비와 학생부의 전공 연계 과목 이수 측면에서 미적분Ⅱ의 의미가 별도로 평가될 수 있습니다.');lines.push('2028학년도 대학별 시행계획과 서류평가 안내에서는 전공 관련 과목을 적절하게 선택했는지, 과목 위계에 따라 이수했는지, 해당 과목에서 어떤 성취를 냈는지를 함께 확인하는 대학이 있습니다.')}else{lines.push('2029학년도 대학별 세부 시행계획은 아직 공개 전입니다. 따라서 특정 대학의 필수 과목으로 단정하지 않고, 2028 대입 체제와 공개된 전공 연계 과목을 참고해 추천했습니다.')}
+ if(r.major.type==='natural')lines.push('자연·공학계열은 수학 과목과 전공 관련 과학 과목을 연결해 선택하되, 과목 이름만 늘리기보다 실제 성취와 탐구의 깊이를 함께 확보하는 것이 중요합니다.');else if(r.major.type==='humanities')lines.push('인문계열은 역사·언어·윤리·문화 과목의 일관성과 읽기·쓰기·발표·탐구 경험을 중심으로 조합하세요.');else lines.push('사회·융합계열은 전공 관련 사회 과목과 데이터·수학 역량을 함께 보여주는 조합이 활용도가 높을 수 있습니다.');if(r.mathConfidence<=2||r.workload<=2)lines.push('현재 학습 부담이 큰 편으로 나타났습니다. 관련 과목을 무조건 피하기보다 선행 개념 복습, 학습 시간, 교사 지원 가능성을 먼저 점검하세요.');$("#admissionAdvice").innerHTML=`<h3>대학 기준을 반영한 선택 조언</h3><ul>${lines.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`}
+function renderChecks(){const mathRecommended=state.grade===2?[state.results.mathCourses[0].id]:state.results.mathCourses.filter(c=>c.score>=70).map(c=>c.id);let html=`<div class="check-section"><div class="check-section-title">수학 선택과목</div><div class="check-grid">${state.results.mathCourses.map(c=>`<label class="check-item ${mathRecommended.includes(c.id)?'recommended':''}"><input type="checkbox" value="${c.id}" data-check><span><strong>${esc(c.name)} · ${c.score}점</strong><span>${esc(c.semester)} · ${mathRecommended.includes(c.id)?'우선 추천':'선택 검토'}</span></span></label>`).join('')}</div></div>`;config().blocks.forEach(b=>{const topIds=state.results.linkedByBlock[b.id].slice(0,state.settings.recommendCount).map(c=>c.id);html+=`<div class="check-section"><div class="check-section-title">${esc(b.title)}</div><div class="check-grid">${state.results.linkedByBlock[b.id].map((c,i)=>`<label class="check-item ${topIds.includes(c.id)?'recommended':''}"><input type="checkbox" value="${c.id}" data-check><span><strong>${i+1}순위 ${esc(c.name)} · ${c.score}점</strong><span>${esc(c.desc)}</span></span></label>`).join('')}</div></div>`});$("#checkSections").innerHTML=html;$$('[data-check]').forEach(x=>{x.checked=state.selected.has(x.value);x.onchange=()=>{if(x.checked){if(state.grade===2&&courses().find(c=>c.id===x.value)?.block==='math'){state.results.mathCourses.forEach(c=>state.selected.delete(c.id));$$('[data-check]').filter(y=>state.results.mathCourses.some(c=>c.id===y.value)).forEach(y=>y.checked=false)}state.selected.add(x.value)}else state.selected.delete(x.value);updateSummary()}})}
+function autoSelect(){state.selected.clear();if(state.grade===2)state.selected.add(state.results.mathCourses[0].id);else state.results.mathCourses.filter(c=>c.score>=70).forEach(c=>state.selected.add(c.id));config().blocks.forEach(b=>state.results.linkedByBlock[b.id].slice(0,state.settings.recommendCount).forEach(c=>state.selected.add(c.id)));$$('[data-check]').forEach(x=>x.checked=state.selected.has(x.value));updateSummary();toast('학기별 상위 추천 과목을 자동 선택했습니다.')}
+function updateSummary(){const selected=courses().filter(c=>state.selected.has(c.id));if(!selected.length){$("#selectionSummary").textContent='아직 선택한 과목이 없습니다.';return}const groups=[];const math=selected.filter(c=>c.block==='math');if(math.length)groups.push(`수학: ${math.map(c=>c.name).join(', ')}`);config().blocks.forEach(b=>{const list=selected.filter(c=>c.block===b.id);if(list.length)groups.push(`${b.title.split('·')[0].trim()}: ${list.map(c=>c.name).join(', ')}`)});$("#selectionSummary").textContent=`${groups.join(' / ')} — ${state.settings.teacherNote}`}
+function buildText(){const r=state.results,selected=courses().filter(c=>state.selected.has(c.id));const lines=[`[${state.settings.schoolName}]`,`${config().label}`,`대입 대상: ${config().cohort}`,`관심 진로: ${r.major.name}`,`희망 학과: ${r.department.label}`,`희망 활동: ${r.career?.label||'진로 탐색 중'}`,`수학 과목 적합도: ${r.mathCourses.map(c=>`${c.name} ${c.score}점`).join(', ')}`];config().blocks.forEach(b=>lines.push(`${b.title} 상위 추천:\n${r.linkedByBlock[b.id].slice(0,5).map((c,i)=>`${i+1}. ${c.name} ${c.score}점`).join('\n')}`));lines.push(`최종 체크 과목: ${selected.length?selected.map(c=>c.name).join(', '):'미선택'}`,`안내: ${state.settings.teacherNote}`,'※ 상담 보조 자료이며 희망 대학의 최신 시행계획·모집요강을 확인해야 합니다.');return lines.join('\n')}
+async function copyResult(){const text=buildText();try{await navigator.clipboard.writeText(text)}catch(e){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove()}toast('결과를 복사했습니다.')}
+function renderReference(){$("#referenceContent").innerHTML=`<p>이 앱은 합격 가능성을 판정하지 않습니다. 희망 학과의 대학 학습 내용, 공개된 권장이수과목, 학생의 성향과 준비도를 연결하는 상담 보조 도구입니다.</p><ul><li><a href="https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=294&boardSeq=97551&lev=0&m=020402" target="_blank" rel="noopener">교육부: 2028 대학입시제도 개편 확정안</a></li><li><a href="https://admission.snu.ac.kr/undergraduate/notice?bbsidx=156194&md=v" target="_blank" rel="noopener">서울대학교: 2028 전공 연계 과목 선택 안내</a></li><li><a href="https://oku.korea.ac.kr/oku/cms/CMN_CON/MainLink.do?BASE_SITE_NO=2&BBS_SEQ=1727&BOARD_SEQ=5&CONFIG_CD=C1435&CONFIG_SEQ=1&GBN=BA&SITE_NO=2&SUB_SEQ=2&TEMP_CODE=IPSI_C" target="_blank" rel="noopener">고려대학교: 자연계열 권장이수과목 안내</a></li><li><a href="https://datascience.korea.ac.kr/ds/under/ds_course.do" target="_blank" rel="noopener">고려대학교 데이터과학과 교과과정</a></li><li><a href="https://cs.korea.ac.kr/cs/under/ai_course.do" target="_blank" rel="noopener">고려대학교 인공지능융합전공 교과과정</a></li><li><a href="https://me.korea.ac.kr/undergraduate/graduate.html" target="_blank" rel="noopener">고려대학교 기계공학부 교과과정</a></li></ul><p>수학 과목의 학습 내용은 사용자가 제공한 서울특별시교육청교육연구정보원의 인공지능 수학·기하·미적분Ⅱ 선택과목 안내 자료를 요약했습니다. ‘유리하다’는 표현은 입학 가산점이나 합격 보장을 뜻하지 않으며, 대학 전공 학습 준비와 학생부의 전공 연계성을 의미합니다.</p>`}
+function restart(){state.currentQuestion=0;state.answers={};state.results=null;state.selected=new Set();showScreen('#homeScreen')}
+function openModal(id){$('#'+id).classList.add('open');document.body.style.overflow='hidden'}function closeModal(id){$('#'+id).classList.remove('open');document.body.style.overflow=''}
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.remove('show'),2200)}
+function esc(v){return String(v).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;')}
+function bind(){$$('[data-grade]').forEach(b=>b.onclick=()=>startSurvey(b.dataset.grade));$('#nextBtn').onclick=nextQuestion;$('#prevBtn').onclick=prevQuestion;$('#autoSelectBtn').onclick=autoSelect;$('#copyResultBtn').onclick=copyResult;$('#printBtn').onclick=()=>window.print();$('#restartBtn').onclick=restart;$('#replayCelebrationBtn').onclick=playCelebration;$('#openSettingsBtn').onclick=()=>openModal('settingsModal');$('#openSourcesBtn').onclick=()=>openModal('sourcesModal');$('#saveSettingsBtn').onclick=saveSettings;$$('[data-close-modal]').forEach(b=>b.onclick=()=>closeModal(b.dataset.closeModal));$$('.modal-backdrop').forEach(m=>m.onclick=e=>{if(e.target===m)closeModal(m.id)});document.addEventListener('click',e=>{const target=e.target.closest('[data-course-detail]');if(target)openCourseDetail(target.dataset.courseDetail)});document.addEventListener('keydown',e=>{if(e.key==='Escape')$$('.modal-backdrop.open').forEach(m=>closeModal(m.id));if(e.key==='Enter'&&$('#surveyScreen').classList.contains('active')&&!$('#nextBtn').disabled)nextQuestion()})}
+loadSettings();bind();
+</script>
+</body>
+</html>
